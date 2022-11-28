@@ -1,6 +1,4 @@
-export const sum = (a: number, b: number) => {
-    if ('development' === process.env.NODE_ENV) {
-        console.log('boop');
-    }
-    return a + b;
-};
+export { HttpFunction } from './decorators/http/http-function';
+
+export { Body } from './decorators/http/body';
+export { Query } from './decorators/http/query';

@@ -4,11 +4,11 @@ import { BodyMetaDataKey } from './body';
 import { QueryDescriptor, QueryMetaDataKey } from './query';
 
 export function HttpFunction(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
-    let method = descriptor.value;
+    let method = descriptor.value!;
 
     descriptor.value = function(...args: any[]) {
         const context: Context = args[0];
-        const req = context.req;
+        const req = context.req!;
 
         let bodyParameter: number[] = Reflect.getOwnMetadata(BodyMetaDataKey, target, propertyName);
         if (bodyParameter) {
