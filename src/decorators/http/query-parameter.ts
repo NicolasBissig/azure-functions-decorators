@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 
-export const QueryMetaDataKey = Symbol('Query');
+export const QueryMetaDataKey = Symbol('QueryParameter');
 export type QueryDescriptor = {
     index: number;
     name: string;
 };
 
-export function Query(queryName?: string): ParameterDecorator {
+export function QueryParameter(queryName?: string): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
         let existingQueryParameters: QueryDescriptor[] =
             Reflect.getOwnMetadata(QueryMetaDataKey, target, propertyKey) || [];

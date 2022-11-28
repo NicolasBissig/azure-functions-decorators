@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import { Context } from '@azure/functions';
-import { BodyMetaDataKey } from './body';
-import { QueryDescriptor, QueryMetaDataKey } from './query';
+import { BodyMetaDataKey } from './request-body';
+import { QueryDescriptor, QueryMetaDataKey } from './query-parameter';
+import { PathParameterDescriptor, PathParameterMetaDataKey } from './path-parameter';
 
 export function HttpFunction(target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
     let method = descriptor.value!;
@@ -13,7 +14,7 @@ export function HttpFunction(target: any, propertyName: string, descriptor: Type
         let bodyParameter: number[] = Reflect.getOwnMetadata(BodyMetaDataKey, target, propertyName);
         if (bodyParameter) {
             if (bodyParameter.length !== 1) {
-                throw new Error('only one @Body parameter is allowed');
+                throw new Error('only one @RequestBody parameter is allowed');
             }
 
             const paramIndex = bodyParameter[0];
@@ -24,6 +25,17 @@ export function HttpFunction(target: any, propertyName: string, descriptor: Type
         if (queryParameters) {
             for (let parameter of queryParameters) {
                 args[parameter.index] = req.query[parameter.name];
+            }
+        }
+
+        let pathParameters: PathParameterDescriptor[] = Reflect.getOwnMetadata(
+            PathParameterMetaDataKey,
+            target,
+            propertyName
+        );
+        if (pathParameters) {
+            for (let parameter of pathParameters) {
+                args[parameter.index] = req.params[parameter.name];
             }
         }
 
