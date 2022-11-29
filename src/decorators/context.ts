@@ -22,7 +22,7 @@ export function handleContextParameter(
     let contextParameter: number[] = Reflect.getOwnMetadata(ContextMetaDataKey, target, propertyName);
     if (contextParameter) {
         if (contextParameter.length !== 1) {
-            throw new Error('only one @RequestBody parameter is allowed');
+            throw new Error('only one @Context parameter is allowed');
         }
 
         const paramIndex = contextParameter[0];
