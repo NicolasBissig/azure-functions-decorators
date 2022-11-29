@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node ${{ NODE_VERSION }}
+      - name: Use Node ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ NODE_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
       - run: npm ci
       - run: npm test
