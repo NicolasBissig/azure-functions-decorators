@@ -14,7 +14,7 @@ class Echo {
     @HttpFunction()
     static async httpTrigger(
         _: Context,
-        @RequestBody body: body,
+        @RequestBody() body: body,
         @QueryParameter('query') query: string
     ): Promise<HttpResponse> {
         return {
