@@ -41,7 +41,6 @@ jobs:
           draft: true
           prerelease: false
           files: |
-            dist
             README.md
             CHANGELOG.md
           fail_on_unmatched_files: true
