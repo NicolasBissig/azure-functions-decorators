@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.1.2-0",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -39,7 +39,6 @@
     "type": "git",
     "url": "https://github.com/NicolasBissig/azure-functions-decorators"
   },
-
   "module": "dist/azure-functions-decorators.esm.js",
   "size-limit": [
     {
