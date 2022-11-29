@@ -13,7 +13,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test",
+    "test": "tsdx test --coverage",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
@@ -34,6 +34,12 @@
   },
   "name": "azure-functions-decorators",
   "author": "Nicolas Bissig",
+  "homepage": "https://github.com/NicolasBissig/azure-functions-decorators",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NicolasBissig/azure-functions-decorators"
+  },
+
   "module": "dist/azure-functions-decorators.esm.js",
   "size-limit": [
     {
