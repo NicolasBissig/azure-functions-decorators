@@ -6,7 +6,7 @@ export const BodyMetaDataKey = Symbol('RequestBody');
 
 export function RequestBody(): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-        const bodyParameters = markParameter(target, propertyKey, parameterIndex, BodyMetaDataKey);
+        const bodyParameters = markParameter(target, propertyKey, BodyMetaDataKey, parameterIndex);
         if (bodyParameters.length > 1) {
             throw new Error('only one @RequestBody parameter is allowed');
         }
