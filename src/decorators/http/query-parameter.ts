@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { HttpRequest } from '@azure/functions';
 import { markParameterWithValue } from '../reflection';
-import { PathParameterDescriptor, PathParameterMetaDataKey } from './path-parameter';
 
 export const QueryMetaDataKey = Symbol('QueryParameter');
 export type QueryDescriptor = {
@@ -12,7 +11,7 @@ export type QueryDescriptor = {
 export function QueryParameter(queryName?: string): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
         const markedParameter = { index: parameterIndex, name: queryName || propertyKey.toString() };
-        markParameterWithValue<PathParameterDescriptor>(target, propertyKey, PathParameterMetaDataKey, markedParameter);
+        markParameterWithValue<QueryDescriptor>(target, propertyKey, QueryMetaDataKey, markedParameter);
     };
 }
 
