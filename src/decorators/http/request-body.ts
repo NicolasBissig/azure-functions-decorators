@@ -1,13 +1,15 @@
 import 'reflect-metadata';
 import { HttpRequest } from '@azure/functions';
+import { markParameter } from '../reflection';
 
 export const BodyMetaDataKey = Symbol('RequestBody');
 
 export function RequestBody(): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-        let existingRequiredParameters: number[] = Reflect.getOwnMetadata(BodyMetaDataKey, target, propertyKey) || [];
-        existingRequiredParameters.push(parameterIndex);
-        Reflect.defineMetadata(BodyMetaDataKey, existingRequiredParameters, target, propertyKey);
+        const bodyParameters = markParameter(target, propertyKey, parameterIndex, BodyMetaDataKey);
+        if (bodyParameters.length > 1) {
+            throw new Error('only one @RequestBody parameter is allowed');
+        }
     };
 }
 
