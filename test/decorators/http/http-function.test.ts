@@ -28,6 +28,7 @@ describe('HTTP function decorators', () => {
 
         const context = ({
             req: ({
+                method: 'GET',
                 rawBody: JSON.stringify(body),
                 query: {
                     query: 'queryValue',

@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { HttpRequest } from '@azure/functions';
 
 export const PathParameterMetaDataKey = Symbol('PathParameter');
 export type PathParameterDescriptor = {
@@ -13,4 +14,17 @@ export function PathParameter(pathParameterName?: string): ParameterDecorator {
         existingQueryParameters.push({ index: parameterIndex, name: pathParameterName || propertyKey.toString() });
         Reflect.defineMetadata(PathParameterMetaDataKey, existingQueryParameters, target, propertyKey);
     };
+}
+
+export function handlePathParameter(target: Object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
+    let pathParameters: PathParameterDescriptor[] = Reflect.getOwnMetadata(
+        PathParameterMetaDataKey,
+        target,
+        propertyName
+    );
+    if (pathParameters) {
+        for (let parameter of pathParameters) {
+            args[parameter.index] = req.params[parameter.name];
+        }
+    }
 }

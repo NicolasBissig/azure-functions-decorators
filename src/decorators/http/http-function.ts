@@ -1,44 +1,37 @@
 import 'reflect-metadata';
-import { Context } from '@azure/functions';
-import { BodyMetaDataKey } from './request-body';
-import { QueryDescriptor, QueryMetaDataKey } from './query-parameter';
-import { PathParameterDescriptor, PathParameterMetaDataKey } from './path-parameter';
+import { handleRequestBodyParameter } from './request-body';
+import { handleQueryParameters } from './query-parameter';
+import { handlePathParameter } from './path-parameter';
+import { isContext, isFunction, isHttpRequest } from './type-guards';
 
 export function HttpFunction(): MethodDecorator {
-    return (target: any, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
-        let method: Function = descriptor.value!;
+    return (target: Object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
+        const method = descriptor?.value;
+        if (!isFunction(method)) {
+            throw new Error('@HttpFunction can only be applied to functions');
+        }
 
         descriptor.value = function(...args: any[]) {
-            const context: Context = args[0];
-            const req = context.req!;
-
-            let bodyParameter: number[] = Reflect.getOwnMetadata(BodyMetaDataKey, target, propertyName);
-            if (bodyParameter) {
-                if (bodyParameter.length !== 1) {
-                    throw new Error('only one @RequestBody parameter is allowed');
-                }
-
-                const paramIndex = bodyParameter[0];
-                args[paramIndex] = JSON.parse(req.rawBody);
+            if (!args || args.length === 0) {
+                throw new Error(`@HttpFunction annotated method ${propertyName.toString()} was provided no arguments`);
             }
-            let queryParameters: QueryDescriptor[] = Reflect.getOwnMetadata(QueryMetaDataKey, target, propertyName);
-
-            if (queryParameters) {
-                for (let parameter of queryParameters) {
-                    args[parameter.index] = req.query[parameter.name];
-                }
+            const context = args[0];
+            if (!isContext(context)) {
+                throw new Error(
+                    `@HttpFunction annotated method ${propertyName.toString()} was not provided a Context as first argument`
+                );
             }
 
-            let pathParameters: PathParameterDescriptor[] = Reflect.getOwnMetadata(
-                PathParameterMetaDataKey,
-                target,
-                propertyName
-            );
-            if (pathParameters) {
-                for (let parameter of pathParameters) {
-                    args[parameter.index] = req.params[parameter.name];
-                }
+            const req = context.req;
+            if (!isHttpRequest(req)) {
+                throw new Error(
+                    `@HttpFunction annotated method ${propertyName.toString()} was provided a context without or invalid http request`
+                );
             }
+
+            handleRequestBodyParameter(target, propertyName, req, args);
+            handleQueryParameters(target, propertyName, req, args);
+            handlePathParameter(target, propertyName, req, args);
 
             return method.apply(this, args);
         };
