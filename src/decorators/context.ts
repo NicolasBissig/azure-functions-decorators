@@ -15,5 +15,5 @@ export function handleContextParameter(
     context: AzureContext,
     args: any[]
 ) {
-    applyToMarked<number>(target, propertyName, ContextMetaDataKey, parameter => (args[parameter] = context), 1);
+    applyToMarked<number>(target, propertyName, ContextMetaDataKey, parameter => (args[parameter] = context));
 }
