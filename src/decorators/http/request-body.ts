@@ -19,7 +19,6 @@ export function handleRequestBodyParameter(
         target,
         propertyName,
         BodyMetaDataKey,
-        parameter => (args[parameter] = JSON.parse(req.rawBody)),
-        1
+        parameter => (args[parameter] = JSON.parse(req.rawBody))
     );
 }
