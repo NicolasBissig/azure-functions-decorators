@@ -52,4 +52,17 @@ describe('HTTP function decorators', () => {
 
         expect(createInvalidClass).toThrow('@HttpFunction can only be applied to functions');
     });
+
+    it('does not allow @HttpFunction with no arguments', async () => {
+        class Echo {
+            @HttpFunction()
+            static async httpTrigger(@QueryParameter('page') page: string): Promise<string> {
+                return page;
+            }
+        }
+
+        // @ts-ignore
+        const callWithNoArguments = () => Echo.httpTrigger();
+        expect(callWithNoArguments).toThrow('@HttpFunction annotated method httpTrigger was provided no arguments');
+    });
 });
