@@ -41,4 +41,15 @@ describe('HTTP function decorators', () => {
         const result = await callAzureFunction(Echo.httpTrigger, context);
         expect(result.body.body).toEqual(body);
     });
+
+    it('does not allow @HttpFunction on non functions', async () => {
+        const createInvalidClass = () => {
+            // @ts-ignore
+            @HttpFunction()
+            // @ts-ignore
+            class Bla {}
+        };
+
+        expect(createInvalidClass).toThrow('@HttpFunction can only be applied to functions');
+    });
 });
