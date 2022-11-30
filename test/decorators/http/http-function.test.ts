@@ -1,5 +1,7 @@
-import { Context, HttpRequest, HttpResponse } from '@azure/functions';
-import { HttpFunction, RequestBody, QueryParameter } from '../../../src';
+import { HttpResponse } from '@azure/functions';
+import { HttpFunction, QueryParameter, RequestBody } from '../../../src';
+import { createContextWithHttpRequest } from './context';
+import { callAzureFunction } from '../azure-function';
 
 type body = {
     id: number;
@@ -26,18 +28,14 @@ describe('HTTP function decorators', () => {
     it('works', async () => {
         const body: body = { id: 42 };
 
-        const context = ({
-            req: ({
-                method: 'GET',
-                rawBody: JSON.stringify(body),
-                query: {
-                    query: 'queryValue',
-                },
-            } as unknown) as HttpRequest,
-        } as unknown) as Context;
+        const context = createContextWithHttpRequest({
+            rawBody: JSON.stringify(body),
+            query: {
+                query: 'queryValue',
+            },
+        });
 
-        // @ts-ignore
-        const result = await Echo.httpTrigger(context);
+        const result = await callAzureFunction(Echo.httpTrigger, context);
         expect(result.body.body).toEqual(body);
     });
 });
