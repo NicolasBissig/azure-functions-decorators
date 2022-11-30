@@ -1,7 +1,7 @@
 import { HttpRequest } from '@azure/functions';
 import { applyToMarked, markParameter } from '../reflection';
 
-export const BodyMetaDataKey = Symbol('RequestBody');
+const BodyMetaDataKey = Symbol('RequestBody');
 
 export function RequestBody(): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {

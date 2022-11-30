@@ -1,7 +1,7 @@
 import { Context as AzureContext } from '@azure/functions';
 import { applyToMarked, markParameter } from './reflection';
 
-export const ContextMetaDataKey = Symbol('Context');
+const ContextMetaDataKey = Symbol('Context');
 
 export function Context(): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {

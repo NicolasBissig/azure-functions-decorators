@@ -1,8 +1,8 @@
 import { HttpRequest } from '@azure/functions';
 import { applyToMarked, markParameterWithValue } from '../reflection';
 
-export const QueryMetaDataKey = Symbol('QueryParameter');
-export type QueryDescriptor = {
+const QueryMetaDataKey = Symbol('QueryParameter');
+type QueryDescriptor = {
     index: number;
     name: string;
 };

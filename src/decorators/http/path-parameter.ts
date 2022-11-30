@@ -1,8 +1,8 @@
 import { HttpRequest } from '@azure/functions';
 import { applyToMarked, markParameterWithValue } from '../reflection';
 
-export const PathParameterMetaDataKey = Symbol('PathParameter');
-export type PathParameterDescriptor = {
+const PathParameterMetaDataKey = Symbol('PathParameter');
+type PathParameterDescriptor = {
     index: number;
     name: string;
 };
