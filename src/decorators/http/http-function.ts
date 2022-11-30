@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { handleRequestBodyParameter } from './request-body';
 import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';

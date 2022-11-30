@@ -6,10 +6,7 @@ export const ContextMetaDataKey = Symbol('Context');
 
 export function Context(): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-        const contextParameters = markParameter(target, propertyKey, ContextMetaDataKey, parameterIndex);
-        if (contextParameters.length > 1) {
-            throw new Error('only one @Context parameter is allowed');
-        }
+        markParameter(target, propertyKey, ContextMetaDataKey, parameterIndex, 1);
     };
 }
 
