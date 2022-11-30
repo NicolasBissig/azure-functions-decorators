@@ -7,7 +7,7 @@ export function markParameterWithValue<T>(
     value: T,
     maxMarked?: number
 ): T[] {
-    let markedParameters: T[] = Reflect.getOwnMetadata(key, target, propertyKey) || [];
+    const markedParameters: T[] = Reflect.getOwnMetadata(key, target, propertyKey) || [];
     markedParameters.push(value);
     if (maxMarked && markedParameters.length > maxMarked) {
         throw new Error(
@@ -35,20 +35,11 @@ export function applyToMarked<T>(
     target: Object,
     propertyName: string | symbol,
     key: symbol,
-    handler: (parameter: T) => any,
-    maxMarked?: number
+    handler: (parameter: T) => any
 ) {
     const markedParameters: T[] = Reflect.getOwnMetadata(key, target, propertyName);
     if (markedParameters) {
-        if (maxMarked && markedParameters.length > maxMarked) {
-            throw new Error(
-                `only ${maxMarked} @${key.description} parameter(s) per method is allowed, got ${
-                    markedParameters.length
-                } on ${String(propertyName)}`
-            );
-        }
-
-        for (let parameter of markedParameters) {
+        for (const parameter of markedParameters) {
             handler(parameter);
         }
     }
