@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { HttpRequest } from '@azure/functions';
-import { markParameterWithValue } from '../reflection';
+import { applyToMarked, markParameterWithValue } from '../reflection';
 
 export const PathParameterMetaDataKey = Symbol('PathParameter');
 export type PathParameterDescriptor = {
@@ -16,14 +16,10 @@ export function PathParameter(pathParameterName?: string): ParameterDecorator {
 }
 
 export function handlePathParameter(target: Object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
-    let pathParameters: PathParameterDescriptor[] = Reflect.getOwnMetadata(
-        PathParameterMetaDataKey,
+    applyToMarked<PathParameterDescriptor>(
         target,
-        propertyName
+        propertyName,
+        PathParameterMetaDataKey,
+        parameter => (args[parameter.index] = req.params[parameter.name])
     );
-    if (pathParameters) {
-        for (let parameter of pathParameters) {
-            args[parameter.index] = req.params[parameter.name];
-        }
-    }
 }

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { HttpRequest } from '@azure/functions';
-import { markParameter } from '../reflection';
+import { applyToMarked, markParameter } from '../reflection';
 
 export const RequestMetaDataKey = Symbol('Request');
 
@@ -16,13 +16,5 @@ export function handleRequestParameter(
     request: HttpRequest,
     args: any[]
 ) {
-    let requestParameter: number[] = Reflect.getOwnMetadata(RequestMetaDataKey, target, propertyName);
-    if (requestParameter) {
-        if (requestParameter.length !== 1) {
-            throw new Error('only one @Request parameter is allowed');
-        }
-
-        const paramIndex = requestParameter[0];
-        args[paramIndex] = request;
-    }
+    applyToMarked<number>(target, propertyName, RequestMetaDataKey, parameter => (args[parameter] = request), 1);
 }
