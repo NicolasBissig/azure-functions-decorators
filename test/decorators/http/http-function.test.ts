@@ -1,4 +1,4 @@
-import { HttpResponse } from '@azure/functions';
+import { Context, HttpResponse } from '@azure/functions';
 import { HttpFunction, QueryParameter, RequestBody } from '../../../src';
 import { createContextWithHttpRequest } from './context';
 import { callAzureFunction } from '../azure-function';
@@ -77,6 +77,21 @@ describe('HTTP function decorators', () => {
         const callWithNonContext = () => Echo.httpTrigger('15');
         expect(callWithNonContext).toThrow(
             '@HttpFunction annotated method httpTrigger was not provided a Context as first argument'
+        );
+    });
+
+    it('does not allow @HttpFunction with context without req as argument', async () => {
+        class Echo {
+            @HttpFunction()
+            static async httpTrigger(@QueryParameter('page') page: string): Promise<string> {
+                return page;
+            }
+        }
+
+        // @ts-ignore
+        const callWithContextWithoutReq = () => Echo.httpTrigger(({ req: { id: 'abc' } } as unknown) as Context);
+        expect(callWithContextWithoutReq).toThrow(
+            '@HttpFunction annotated method httpTrigger was provided a context without or invalid http request'
         );
     });
 });
