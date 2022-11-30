@@ -65,4 +65,18 @@ describe('HTTP function decorators', () => {
         const callWithNoArguments = () => Echo.httpTrigger();
         expect(callWithNoArguments).toThrow('@HttpFunction annotated method httpTrigger was provided no arguments');
     });
+
+    it('does not allow @HttpFunction with non context as argument', async () => {
+        class Echo {
+            @HttpFunction()
+            static async httpTrigger(@QueryParameter('page') page: string): Promise<string> {
+                return page;
+            }
+        }
+
+        const callWithNonContext = () => Echo.httpTrigger('15');
+        expect(callWithNonContext).toThrow(
+            '@HttpFunction annotated method httpTrigger was not provided a Context as first argument'
+        );
+    });
 });
