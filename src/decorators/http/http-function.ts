@@ -1,9 +1,9 @@
-import 'reflect-metadata';
 import { handleRequestBodyParameter } from './request-body';
 import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';
 import { isContext, isFunction, isHttpRequest } from './type-guards';
 import { handleContextParameter } from '../context';
+import { handleRequestParameter } from './http-request';
 
 export function HttpFunction(): MethodDecorator {
     return (target: Object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
@@ -31,6 +31,7 @@ export function HttpFunction(): MethodDecorator {
             }
 
             handleContextParameter(target, propertyName, context, args);
+            handleRequestParameter(target, propertyName, req, args);
             handleRequestBodyParameter(target, propertyName, req, args);
             handleQueryParameters(target, propertyName, req, args);
             handlePathParameter(target, propertyName, req, args);

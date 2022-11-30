@@ -1,9 +1,8 @@
-import 'reflect-metadata';
 import { HttpRequest } from '@azure/functions';
-import { markParameterWithValue } from '../reflection';
+import { applyToMarked, markParameterWithValue } from '../reflection';
 
-export const QueryMetaDataKey = Symbol('QueryParameter');
-export type QueryDescriptor = {
+const QueryMetaDataKey = Symbol('QueryParameter');
+type QueryDescriptor = {
     index: number;
     name: string;
 };
@@ -16,11 +15,10 @@ export function QueryParameter(queryName?: string): ParameterDecorator {
 }
 
 export function handleQueryParameters(target: Object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
-    let queryParameters: QueryDescriptor[] = Reflect.getOwnMetadata(QueryMetaDataKey, target, propertyName);
-
-    if (queryParameters) {
-        for (let parameter of queryParameters) {
-            args[parameter.index] = req.query[parameter.name];
-        }
-    }
+    applyToMarked<QueryDescriptor>(
+        target,
+        propertyName,
+        QueryMetaDataKey,
+        parameter => (args[parameter.index] = req.query[parameter.name])
+    );
 }

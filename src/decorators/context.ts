@@ -1,15 +1,11 @@
-import 'reflect-metadata';
 import { Context as AzureContext } from '@azure/functions';
-import { markParameter } from './reflection';
+import { applyToMarked, markParameter } from './reflection';
 
-export const ContextMetaDataKey = Symbol('Context');
+const ContextMetaDataKey = Symbol('Context');
 
 export function Context(): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
-        const contextParameters = markParameter(target, propertyKey, ContextMetaDataKey, parameterIndex);
-        if (contextParameters.length > 1) {
-            throw new Error('only one @Context parameter is allowed');
-        }
+        markParameter(target, propertyKey, ContextMetaDataKey, parameterIndex, 1);
     };
 }
 
@@ -19,13 +15,5 @@ export function handleContextParameter(
     context: AzureContext,
     args: any[]
 ) {
-    let contextParameter: number[] = Reflect.getOwnMetadata(ContextMetaDataKey, target, propertyName);
-    if (contextParameter) {
-        if (contextParameter.length !== 1) {
-            throw new Error('only one @Context parameter is allowed');
-        }
-
-        const paramIndex = contextParameter[0];
-        args[paramIndex] = context;
-    }
+    applyToMarked<number>(target, propertyName, ContextMetaDataKey, parameter => (args[parameter] = context), 1);
 }
