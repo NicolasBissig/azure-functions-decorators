@@ -23,7 +23,7 @@ to your `tsconfig.json`
 ```ts
 class FunctionApp {
     @HttpFunction()
-    static async httpTrigger(@QueryParameter() name: string): Promise<string> {
+    static async httpTrigger(@QueryParameter('name') name: string): Promise<string> {
         return `Hello, ${name}`
     }
 }
