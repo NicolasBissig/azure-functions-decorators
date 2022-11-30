@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Context as AzureContext } from '@azure/functions';
 import { applyToMarked, markParameter } from './reflection';
 

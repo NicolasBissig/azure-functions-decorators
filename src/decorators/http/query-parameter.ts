@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { HttpRequest } from '@azure/functions';
 import { applyToMarked, markParameterWithValue } from '../reflection';
 

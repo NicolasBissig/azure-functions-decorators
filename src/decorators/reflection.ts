@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 export function markParameterWithValue<T>(
     target: Object,
     propertyKey: string | symbol,
