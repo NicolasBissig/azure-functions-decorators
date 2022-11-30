@@ -1,5 +1,5 @@
-import { Context, HttpResponse } from '@azure/functions';
-import { HttpFunction, QueryParameter, RequestBody } from '../../../src';
+import { Context, HttpRequest, HttpResponse } from '@azure/functions';
+import { HttpFunction, QueryParameter, Request, RequestBody } from '../../../src';
 import { createContextWithHttpRequest } from './context';
 import { callAzureFunction } from '../azure-function';
 
@@ -93,5 +93,24 @@ describe('HTTP function decorators', () => {
         expect(callWithContextWithoutReq).toThrow(
             '@HttpFunction annotated method httpTrigger was provided a context without or invalid http request'
         );
+    });
+
+    it('does not allow @HttpFunction with invalid amout of decorated parameters', async () => {
+        const createInvalidClass = () => {
+            // @ts-ignore
+            class Echo {
+                @HttpFunction()
+                static async httpTrigger(
+                    // @ts-ignore
+                    @Request() req: HttpRequest,
+                    // @ts-ignore
+                    @Request() req2: HttpRequest
+                ): Promise<HttpRequest> {
+                    return req;
+                }
+            }
+        };
+
+        expect(createInvalidClass).toThrow('only 1 @Request parameter(s) per method is allowed, got 2 on httpTrigger');
     });
 });
