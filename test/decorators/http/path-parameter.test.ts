@@ -40,4 +40,25 @@ describe('@PathParameter decorator', () => {
         const result = await callAzureFunction(Echo.httpTrigger, context);
         expect(result).toEqual(id);
     });
+
+    it('passes multiple path parameters correctly', async () => {
+        class Echo {
+            @HttpFunction()
+            static async httpTrigger(@PathParameter() size: string, @PathParameter() token: string): Promise<string[]> {
+                return [size, token];
+            }
+        }
+
+        const size = '15';
+        const token = 'abc';
+        const context = createContextWithHttpRequest({
+            params: {
+                size: size,
+                token: token,
+            },
+        });
+
+        const result = await callAzureFunction(Echo.httpTrigger, context);
+        expect(result).toEqual([size, token]);
+    });
 });
