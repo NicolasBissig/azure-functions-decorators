@@ -6,7 +6,7 @@ describe('@PathParameter decorator', () => {
     it('passes the path parameter correctly as single argument', async () => {
         class Echo {
             @HttpFunction()
-            static async httpTrigger(@PathParameter() page: string): Promise<string> {
+            static async httpTrigger(@PathParameter('page') page: string): Promise<string> {
                 return page;
             }
         }
@@ -22,29 +22,13 @@ describe('@PathParameter decorator', () => {
         expect(result).toEqual(page);
     });
 
-    it('passes the path parameter correctly as single named argument', async () => {
-        class Echo {
-            @HttpFunction()
-            static async httpTrigger(@PathParameter('ID') id: string): Promise<string> {
-                return id;
-            }
-        }
-
-        const id = 'user-id';
-        const context = createContextWithHttpRequest({
-            params: {
-                ID: id,
-            },
-        });
-
-        const result = await callAzureFunction(Echo.httpTrigger, context);
-        expect(result).toEqual(id);
-    });
-
     it('passes multiple path parameters correctly', async () => {
         class Echo {
             @HttpFunction()
-            static async httpTrigger(@PathParameter() size: string, @PathParameter() token: string): Promise<string[]> {
+            static async httpTrigger(
+                @PathParameter('size') size: string,
+                @PathParameter('token') token: string
+            ): Promise<string[]> {
                 return [size, token];
             }
         }
@@ -60,5 +44,35 @@ describe('@PathParameter decorator', () => {
 
         const result = await callAzureFunction(Echo.httpTrigger, context);
         expect(result).toEqual([size, token]);
+    });
+
+    it('should pass undefined when path parameter is not present', async () => {
+        class Echo {
+            @HttpFunction()
+            static async httpTrigger(@PathParameter('size') size: string): Promise<string> {
+                return size;
+            }
+        }
+
+        const context = createContextWithHttpRequest({
+            params: {},
+        });
+
+        const result = await callAzureFunction(Echo.httpTrigger, context);
+        expect(result).toEqual(undefined);
+    });
+
+    it('should pass undefined when params are not present', async () => {
+        class Echo {
+            @HttpFunction()
+            static async httpTrigger(@PathParameter('size') size: string): Promise<string> {
+                return size;
+            }
+        }
+
+        const context = createContextWithHttpRequest();
+
+        const result = await callAzureFunction(Echo.httpTrigger, context);
+        expect(result).toEqual(undefined);
     });
 });
