@@ -16,7 +16,7 @@ export function createContext(context?: Partial<Context>): Context {
     return { ...defaultContext, ...context };
 }
 
-export function createContextWithHttpRequest(req: Partial<HttpRequest>): Context {
+export function createContextWithHttpRequest(req?: Partial<HttpRequest>): Context {
     const context = createContext();
     context.req = createHttpRequest(req);
     return context;
