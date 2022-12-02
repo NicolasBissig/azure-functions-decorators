@@ -1,5 +1,7 @@
-import { Context as AzureContext, HttpRequest } from '@azure/functions';
+import { Context as AzureContext } from '@azure/functions';
 import { Context, HttpFunction, PathParameter } from '../../src';
+import { createContextWithHttpRequest } from './http/context';
+import { callAzureFunction } from './azure-function';
 
 type ContextEchoResponse = {
     page: number;
@@ -21,19 +23,15 @@ class ContextEcho {
 
 describe('@Context decorator', () => {
     it('should pass context correctly', async () => {
-        const page = 15;
+        const page = '15';
 
-        const context = ({
-            req: ({
-                method: 'GET',
-                params: {
-                    page: page,
-                },
-            } as unknown) as HttpRequest,
-        } as unknown) as AzureContext;
+        const context = createContextWithHttpRequest({
+            params: {
+                page: page,
+            },
+        });
 
-        // @ts-ignore
-        const result: ContextEchoResponse = await ContextEcho.httpTrigger(context);
+        const result: ContextEchoResponse = await callAzureFunction(ContextEcho.httpTrigger, context);
         expect(result.page).toEqual(page);
         expect(result.context).toBe(context);
     });
