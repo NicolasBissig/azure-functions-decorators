@@ -4,7 +4,7 @@ import { applyToMarked, markParameter } from '../reflection';
 const RequestMetaDataKey = Symbol('Request');
 
 /**
- * The @{@link Request @Request} decorator injects the {@link HttpRequest} from the context.
+ * The {@link Request @Request} decorator injects the {@link HttpRequest} from the context.
  * The injected parameter should be of type {@link HttpRequest}.
  */
 export function Request(): ParameterDecorator {
