@@ -14,8 +14,8 @@ export function PathParameter(key: string): ParameterDecorator {
     };
 }
 
-function findParameter(req: HttpRequest, parameter: string): string | undefined {
-    const params = req.params;
+function findPathParameter(req: HttpRequest, parameter: string): string | undefined {
+    const params = req?.params;
     if (!params) return undefined;
     const value = params[parameter];
     return value ? value : undefined;
@@ -26,6 +26,6 @@ export function handlePathParameter(target: Object, propertyName: string | symbo
         target,
         propertyName,
         PathParameterMetaDataKey,
-        parameter => (args[parameter.index] = findParameter(req, parameter.name))
+        parameter => (args[parameter.index] = findPathParameter(req, parameter.name))
     );
 }

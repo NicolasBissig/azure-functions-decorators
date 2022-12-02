@@ -14,8 +14,8 @@ export function QueryParameter(key: string): ParameterDecorator {
     };
 }
 
-function findParameter(req: HttpRequest, parameter: string): string | undefined {
-    const query = req.query;
+function findQueryParameter(req: HttpRequest, parameter: string): string | undefined {
+    const query = req?.query;
     if (!query) return undefined;
     const value = query[parameter];
     return value ? value : undefined;
@@ -26,6 +26,6 @@ export function handleQueryParameters(target: Object, propertyName: string | sym
         target,
         propertyName,
         QueryMetaDataKey,
-        parameter => (args[parameter.index] = findParameter(req, parameter.name))
+        parameter => (args[parameter.index] = findQueryParameter(req, parameter.name))
     );
 }
