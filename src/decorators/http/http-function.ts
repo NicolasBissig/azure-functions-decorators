@@ -5,6 +5,10 @@ import { isContext, isFunction, isHttpRequest } from './type-guards';
 import { handleContextParameter } from '../context';
 import { handleRequestParameter } from './http-request';
 
+/**
+ * The {@link HttpFunction @HttpFunction} decorator marks a static class function as a httpTrigger function.
+ * This decorator must be present for HTTP related decorators to work.
+ */
 export function HttpFunction(): MethodDecorator {
     return (target: Object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
         const method = descriptor?.value;

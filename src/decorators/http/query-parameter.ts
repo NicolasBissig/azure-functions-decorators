@@ -7,6 +7,12 @@ type QueryDescriptor = {
     name: string;
 };
 
+/**
+ * The {@link QueryParameter @QueryParameter} decorator injects a query parameter value from the request into a parameter.
+ * The type of the injected parameter should be {@link string}.
+ * If the variable is not available undefined will be injected.
+ * @param key of the query parameter value to inject.
+ */
 export function QueryParameter(key: string): ParameterDecorator {
     return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
         const markedParameter = { index: parameterIndex, name: key };
