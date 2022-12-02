@@ -8,6 +8,18 @@ import { handleRequestParameter } from './http-request';
 /**
  * The {@link HttpFunction @HttpFunction} decorator marks a static class function as a httpTrigger function.
  * This decorator must be present for HTTP related decorators to work.
+ *
+ * Supported decorators are:
+ *
+ *      General:
+ *        {@link Context @Context}
+ *
+ *      Http specific:
+ *        {@link Request @Request}
+ *        {@link PathParameter @PathParameter}
+ *        {@link QueryParameter @QueryParameter}
+ *        {@link RequestBody @RequestBody}
+ *        {@link Context @Context}
  */
 export function HttpFunction(): MethodDecorator {
     return (target: Object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
