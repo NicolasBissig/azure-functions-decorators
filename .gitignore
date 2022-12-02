@@ -2,3 +2,5 @@
 **/node_modules
 **/.idea
 **/coverage
+# stryker temp files
+.stryker-tmp
