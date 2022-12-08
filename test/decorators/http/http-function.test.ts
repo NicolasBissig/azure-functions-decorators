@@ -1,7 +1,7 @@
-import { Context, HttpRequest, HttpResponse } from '@azure/functions';
-import { HttpFunction, QueryParameter, Request, RequestBody } from '../../../src';
-import { createContextWithHttpRequest } from './context';
-import { callAzureFunction } from '../azure-function';
+import {Context, HttpRequest, HttpResponse} from '@azure/functions';
+import {HttpFunction, QueryParameter, Request, RequestBody} from '../../../src';
+import {createContextWithHttpRequest} from './context';
+import {callAzureFunction} from '../azure-function';
 
 type body = {
     id: number;
@@ -23,13 +23,13 @@ describe('HTTP function decorators', () => {
                 return {
                     body: {
                         body: body,
-                        queryParameter: { query: query },
+                        queryParameter: {query: query},
                     } as echoResponse,
                 };
             }
         }
 
-        const body: body = { id: 42 };
+        const body: body = {id: 42};
 
         const context = createContextWithHttpRequest({
             rawBody: JSON.stringify(body),
@@ -46,8 +46,9 @@ describe('HTTP function decorators', () => {
         const createInvalidClass = () => {
             // @ts-ignore
             @HttpFunction()
-            // @ts-ignore
-            class Bla {}
+                // @ts-ignore
+            class Bla {
+            }
         };
 
         expect(createInvalidClass).toThrow('@HttpFunction can only be applied to functions');
@@ -89,13 +90,13 @@ describe('HTTP function decorators', () => {
         }
 
         // @ts-ignore
-        const callWithContextWithoutReq = () => Echo.httpTrigger(({ req: { id: 'abc' } } as unknown) as Context);
+        const callWithContextWithoutReq = () => Echo.httpTrigger(({req: {id: 'abc'}} as unknown) as Context);
         expect(callWithContextWithoutReq).toThrow(
             '@HttpFunction annotated method httpTrigger was provided a context without or invalid http request'
         );
     });
 
-    it('does not allow @HttpFunction with invalid amout of decorated parameters', async () => {
+    it('does not allow @HttpFunction with invalid amount of decorated parameters', async () => {
         const createInvalidClass = () => {
             // @ts-ignore
             class Echo {
@@ -112,5 +113,21 @@ describe('HTTP function decorators', () => {
         };
 
         expect(createInvalidClass).toThrow('only 1 @Request parameter(s) per method is allowed, got 2 on httpTrigger');
+    });
+
+    /**
+     * Thrown errors are handled by Azure Functions runtime and return a 500 status by default
+     */
+    it('rethrows uncaught errors', async () => {
+        class ErrorFunction {
+            @HttpFunction()
+            static async httpTrigger(): Promise<HttpResponse> {
+                throw new Error('Internal error thrown')
+            }
+        }
+
+        const context = createContextWithHttpRequest();
+
+        await expect(() => callAzureFunction(ErrorFunction.httpTrigger, context)).rejects.toThrowError('Uncaught error in @HttpFunction')
     });
 });
