@@ -52,8 +52,5 @@ export function handleError(
         return errorResponseFromDecorator
     }
 
-    throw new Error('Uncaught error in @HttpFunction', {
-        cause: target
-    })
-
+    throw target
 }

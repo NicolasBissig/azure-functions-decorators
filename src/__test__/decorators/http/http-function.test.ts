@@ -129,7 +129,7 @@ describe('HTTP function decorators', () => {
 
         const context = createContextWithHttpRequest();
 
-        await expect(() => callAzureFunction(ErrorFunction.httpTrigger, context)).rejects.toThrowError('Uncaught error in @HttpFunction')
+        await expect(() => callAzureFunction(ErrorFunction.httpTrigger, context)).rejects.toThrowError('Internal error thrown')
     });
 
     it('returns error status for decorated errors', async () => {
