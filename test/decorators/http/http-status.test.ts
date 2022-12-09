@@ -10,7 +10,7 @@ describe('@HttpStatus decorator', () => {
         const teapotInstance = new TeaPot()
 
         // @ts-ignore
-        expect(teapotInstance.HttpStatus).toEqual(418)
+        expect(teapotInstance._HttpStatus).toEqual(418)
     });
 
     it('throws with multiple status decorators', async () => {
@@ -24,6 +24,6 @@ describe('@HttpStatus decorator', () => {
             }
         };
 
-        expect(createInvalidClass).toThrow('Cannot redefine property: HttpStatus')
+        expect(createInvalidClass).toThrow('Cannot redefine property: _HttpStatus')
     });
 })
