@@ -62,4 +62,26 @@ describe('@HttpStatus decorator', () => {
         expect(findHttpStatusBySymbol(notFoundInstance)).toEqual(404)
         expect(findHttpStatusBySymbol(userNotFoundInstance)).toEqual(404)
     });
+
+    it('assigns status correctly from numeric string', async () => {
+        @HttpStatus("418" as unknown as number)
+        class TeaPot {
+
+        }
+
+        const teapotInstance = new TeaPot()
+
+        expect(findHttpStatusBySymbol(teapotInstance)).toEqual(418)
+    });
+
+    it('assigns undefined from non-numeric string', async () => {
+        @HttpStatus("teapot" as unknown as number)
+        class TeaPot {
+
+        }
+
+        const teapotInstance = new TeaPot()
+
+        expect(findHttpStatusBySymbol(teapotInstance)).toBeUndefined()
+    });
 })
