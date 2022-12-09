@@ -11,8 +11,10 @@
     "node": ">=10"
   },
   "scripts": {
+    "tsdx": "tsdx",
     "start": "tsdx watch",
-    "build": "tsdx build",
+    "build": "tsdx build --target es2020 --tsconfig tsconfig.build.json",
+    "pretest": "npm run build",
     "test": "jest",
     "test:mutation": "stryker run",
     "lint": "tsdx lint",

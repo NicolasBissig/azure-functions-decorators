@@ -1,8 +1,8 @@
 import {Context, HttpRequest, HttpResponse} from '@azure/functions';
-import {HttpFunction, QueryParameter, Request, RequestBody} from '../../../src';
+import {HttpFunction, QueryParameter, Request, RequestBody} from '../../../index';
 import {createContextWithHttpRequest} from './context';
 import {callAzureFunction} from '../azure-function';
-import {HttpStatus} from "../../../src/decorators/http/http-status";
+import {HttpStatus} from "../../../decorators/http/http-status";
 
 type body = {
     id: number;

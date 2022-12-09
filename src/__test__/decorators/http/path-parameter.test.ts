@@ -1,4 +1,4 @@
-import { HttpFunction, PathParameter } from '../../../src';
+import { HttpFunction, PathParameter } from '../../../index';
 import { createContextWithHttpRequest } from './context';
 import { callAzureFunction } from '../azure-function';
 

@@ -1,5 +1,5 @@
 import { Context as AzureContext } from '@azure/functions';
-import { Context, HttpFunction, PathParameter } from '../../src';
+import { Context, HttpFunction, PathParameter } from '../../index';
 import { createContextWithHttpRequest } from './http/context';
 import { callAzureFunction } from './azure-function';
 

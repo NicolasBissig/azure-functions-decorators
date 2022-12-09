@@ -1,4 +1,4 @@
-import { HttpFunction, RequestBody } from '../../../src';
+import { HttpFunction, RequestBody } from '../../../index';
 import { createContextWithHttpRequest } from './context';
 import { callAzureFunction } from '../azure-function';
 

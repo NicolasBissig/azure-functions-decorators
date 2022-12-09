@@ -1,4 +1,4 @@
-import {findHttpStatusBySymbol, HttpStatus} from "../../../src/decorators/http/http-status";
+import {findHttpStatusBySymbol, HttpStatus} from "../../../decorators/http/http-status";
 
 describe('@HttpStatus decorator', () => {
     it('assigns status correctly to a class instance', async () => {
