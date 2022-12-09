@@ -1,5 +1,8 @@
 import {Context} from "@azure/functions";
 
+const HttpStatusPrototypeProperty = Symbol('_HttpStatus');
+
+
 /**
  * The {@link HttpStatus @HttpStatus} decorator injects a http status value into decorated error instances.
  *
@@ -8,10 +11,30 @@ import {Context} from "@azure/functions";
  */
 export function HttpStatus(status: number): ClassDecorator {
     return (target: Function) => {
+        Object.defineProperty(target.prototype, HttpStatusPrototypeProperty, {
+            value: status
+        })
+
         Object.defineProperty(target.prototype, '_HttpStatus', {
             value: status
         })
     };
+}
+
+export function findHttpStatusBySymbol(target: any): number | undefined {
+    try {
+        const status = target?.[HttpStatusPrototypeProperty]
+
+        const statusCastToNumber = Number(status)
+
+        if (isNaN(statusCastToNumber)) {
+            return undefined
+        }
+
+        return statusCastToNumber
+    } catch (e) {
+        return undefined
+    }
 }
 
 export function handleError(
@@ -19,8 +42,7 @@ export function handleError(
     context: Context
 ) {
 
-    // @ts-ignore
-    const statusFromErrorInstance = target?._HttpStatus
+    const statusFromErrorInstance = findHttpStatusBySymbol(target)
 
     if (statusFromErrorInstance) {
         const errorResponseFromDecorator = {

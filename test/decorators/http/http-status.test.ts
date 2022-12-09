@@ -1,4 +1,4 @@
-import {HttpStatus} from "../../../src/decorators/http/http-status";
+import {findHttpStatusBySymbol, HttpStatus} from "../../../src/decorators/http/http-status";
 
 describe('@HttpStatus decorator', () => {
     it('assigns status correctly to a class instance', async () => {
@@ -9,8 +9,7 @@ describe('@HttpStatus decorator', () => {
 
         const teapotInstance = new TeaPot()
 
-        // @ts-ignore
-        expect(teapotInstance._HttpStatus).toEqual(418)
+        expect(findHttpStatusBySymbol(teapotInstance)).toEqual(418)
     });
 
     it('throws with multiple status decorators', async () => {
@@ -18,13 +17,13 @@ describe('@HttpStatus decorator', () => {
         const createInvalidClass = () => {
             @HttpStatus(200)
             @HttpStatus(418)
-                // @ts-ignore
+            // @ts-ignore
             class InvalidTeaPot {
 
             }
         };
 
-        expect(createInvalidClass).toThrow('Cannot redefine property: _HttpStatus')
+        expect(createInvalidClass).toThrow('Cannot redefine property: Symbol(_HttpStatus)')
     });
 
     it('on child overrides @HttpStatus from parent class', async () => {
@@ -42,10 +41,8 @@ describe('@HttpStatus decorator', () => {
         const badRequestInstance = new BadRequest()
         const teapotInstance = new TeaPot()
 
-        // @ts-ignore
-        expect(badRequestInstance._HttpStatus).toEqual(400)
-        // @ts-ignore
-        expect(teapotInstance._HttpStatus).toEqual(418)
+        expect(findHttpStatusBySymbol(badRequestInstance)).toEqual(400)
+        expect(findHttpStatusBySymbol(teapotInstance)).toEqual(418)
     });
 
     it('on parent class inherits @HttpStatus to child class', async () => {
@@ -59,9 +56,10 @@ describe('@HttpStatus decorator', () => {
 
         }
 
+        const notFoundInstance = new NotFound()
         const userNotFoundInstance = new UserNotFound()
 
-        // @ts-ignore
-        expect(userNotFoundInstance._HttpStatus).toEqual(404)
+        expect(findHttpStatusBySymbol(notFoundInstance)).toEqual(404)
+        expect(findHttpStatusBySymbol(userNotFoundInstance)).toEqual(404)
     });
 })
