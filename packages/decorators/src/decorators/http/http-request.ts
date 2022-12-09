@@ -8,13 +8,13 @@ const RequestMetaDataKey = Symbol('Request');
  * The injected parameter should be of type {@link HttpRequest}.
  */
 export function Request(): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+    return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
         markParameter(target, propertyKey, RequestMetaDataKey, parameterIndex, 1);
     };
 }
 
 export function handleRequestParameter(
-    target: Object,
+    target: object,
     propertyName: string | symbol,
     request: HttpRequest,
     args: any[]

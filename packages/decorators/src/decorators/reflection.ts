@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 export function markParameterWithValue<T>(
-    target: Object,
+    target: object,
     propertyKey: string | symbol,
     key: symbol,
     value: T,
@@ -22,7 +22,7 @@ export function markParameterWithValue<T>(
 }
 
 export function markParameter(
-    target: Object,
+    target: object,
     propertyKey: string | symbol,
     key: symbol,
     parameterIndex: number,
@@ -32,7 +32,7 @@ export function markParameter(
 }
 
 export function applyToMarked<T>(
-    target: Object,
+    target: object,
     propertyName: string | symbol,
     key: symbol,
     handler: (parameter: T) => any

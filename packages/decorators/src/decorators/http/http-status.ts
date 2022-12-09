@@ -36,7 +36,7 @@ export function findHttpStatusBySymbol(target: any): number | undefined {
     }
 }
 
-export function handleError(target: Object, context: Context) {
+export function handleError(target: object, context: Context) {
     const statusFromErrorInstance = findHttpStatusBySymbol(target);
 
     if (statusFromErrorInstance) {

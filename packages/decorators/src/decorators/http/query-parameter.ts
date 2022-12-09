@@ -14,7 +14,7 @@ type QueryDescriptor = {
  * @param key of the query parameter value to inject.
  */
 export function QueryParameter(key: string): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+    return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
         const markedParameter = { index: parameterIndex, name: key };
         markParameterWithValue<QueryDescriptor>(target, propertyKey, QueryMetaDataKey, markedParameter);
     };
@@ -27,7 +27,7 @@ function findQueryParameter(req: HttpRequest, parameter: string): string | undef
     return value ? value : undefined;
 }
 
-export function handleQueryParameters(target: Object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
+export function handleQueryParameters(target: object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
     applyToMarked<QueryDescriptor>(
         target,
         propertyName,
