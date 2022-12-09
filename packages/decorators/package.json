@@ -11,13 +11,12 @@
         "node": ">=10"
     },
     "scripts": {
-        "tsdx": "tsdx",
         "start": "tsdx watch",
         "build": "tsdx build --target es2020 --tsconfig tsconfig.build.json",
         "pretest": "npm run build",
         "test": "jest",
         "test:mutation": "stryker run",
-        "prepare": "tsdx build",
+        "prepare": "npm run build",
         "size": "size-limit",
         "analyze": "size-limit --why"
     },
