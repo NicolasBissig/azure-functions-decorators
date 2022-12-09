@@ -4,6 +4,7 @@ import {handlePathParameter} from './path-parameter';
 import {isContext, isFunction, isHttpRequest} from './type-guards';
 import {handleContextParameter} from '../context';
 import {handleRequestParameter} from './http-request';
+import {handleError} from "./http-status";
 
 /**
  * The {@link HttpFunction @HttpFunction} decorator marks a static class function as a httpTrigger function.
@@ -55,9 +56,7 @@ export function HttpFunction(): MethodDecorator {
             try {
                 return await method.apply(this, args);
             } catch (e) {
-                throw new Error('Uncaught error in @HttpFunction', {
-                    cause: e
-                })
+                return handleError(e as Object, context)
             }
         };
     };

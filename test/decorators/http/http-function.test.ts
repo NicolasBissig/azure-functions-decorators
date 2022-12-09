@@ -2,6 +2,7 @@ import {Context, HttpRequest, HttpResponse} from '@azure/functions';
 import {HttpFunction, QueryParameter, Request, RequestBody} from '../../../src';
 import {createContextWithHttpRequest} from './context';
 import {callAzureFunction} from '../azure-function';
+import {HttpStatus} from "../../../src/decorators/http/http-status";
 
 type body = {
     id: number;
@@ -129,5 +130,25 @@ describe('HTTP function decorators', () => {
         const context = createContextWithHttpRequest();
 
         await expect(() => callAzureFunction(ErrorFunction.httpTrigger, context)).rejects.toThrowError('Uncaught error in @HttpFunction')
+    });
+
+    it('returns error status for decorated errors', async () => {
+
+        @HttpStatus(404)
+        class NotFoundError extends Error {
+
+        }
+
+        class ErrorFunction {
+            @HttpFunction()
+            static async httpTrigger(): Promise<HttpResponse> {
+                throw new NotFoundError('Entity not found')
+            }
+        }
+
+        const context = createContextWithHttpRequest();
+
+        const response = await callAzureFunction(ErrorFunction.httpTrigger, context)
+        expect(response.status).toEqual(404)
     });
 });
