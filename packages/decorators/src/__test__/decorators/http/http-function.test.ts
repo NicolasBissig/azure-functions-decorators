@@ -92,7 +92,7 @@ describe('HTTP function decorators', () => {
         }
 
         // @ts-ignore
-        const callWithContextWithoutReq = async () => Echo.httpTrigger(({ req: { id: 'abc' } } as unknown) as Context);
+        const callWithContextWithoutReq = async () => Echo.httpTrigger({ req: { id: 'abc' } } as unknown as Context);
         await expect(callWithContextWithoutReq).rejects.toThrow(
             '@HttpFunction annotated method httpTrigger was provided a context without or invalid http request'
         );

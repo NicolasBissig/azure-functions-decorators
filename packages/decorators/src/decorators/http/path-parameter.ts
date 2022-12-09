@@ -32,6 +32,6 @@ export function handlePathParameter(target: Object, propertyName: string | symbo
         target,
         propertyName,
         PathParameterMetaDataKey,
-        parameter => (args[parameter.index] = findPathParameter(req, parameter.name))
+        (parameter) => (args[parameter.index] = findPathParameter(req, parameter.name))
     );
 }

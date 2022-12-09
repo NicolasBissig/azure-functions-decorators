@@ -19,5 +19,5 @@ export function handleRequestParameter(
     request: HttpRequest,
     args: any[]
 ) {
-    applyToMarked<number>(target, propertyName, RequestMetaDataKey, parameter => (args[parameter] = request));
+    applyToMarked<number>(target, propertyName, RequestMetaDataKey, (parameter) => (args[parameter] = request));
 }

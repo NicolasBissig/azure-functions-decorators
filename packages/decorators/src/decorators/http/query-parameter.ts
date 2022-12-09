@@ -32,6 +32,6 @@ export function handleQueryParameters(target: Object, propertyName: string | sym
         target,
         propertyName,
         QueryMetaDataKey,
-        parameter => (args[parameter.index] = findQueryParameter(req, parameter.name))
+        (parameter) => (args[parameter.index] = findQueryParameter(req, parameter.name))
     );
 }

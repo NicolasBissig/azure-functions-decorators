@@ -29,7 +29,7 @@ export function HttpFunction(): MethodDecorator {
             throw new Error('@HttpFunction can only be applied to functions');
         }
 
-        descriptor.value = async function(...args: any[]) {
+        descriptor.value = async function (...args: any[]) {
             if (!args || args.length === 0) {
                 throw new Error(`@HttpFunction annotated method ${propertyName.toString()} was provided no arguments`);
             }

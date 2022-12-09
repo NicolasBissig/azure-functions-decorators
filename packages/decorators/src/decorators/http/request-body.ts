@@ -28,5 +28,5 @@ export function handleRequestBodyParameter(
     req: HttpRequest,
     args: any[]
 ) {
-    applyToMarked<number>(target, propertyName, BodyMetaDataKey, parameter => (args[parameter] = parseBody(req)));
+    applyToMarked<number>(target, propertyName, BodyMetaDataKey, (parameter) => (args[parameter] = parseBody(req)));
 }
