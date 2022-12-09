@@ -1,8 +1,8 @@
-import {Context, HttpRequest, HttpResponse} from '@azure/functions';
-import {HttpFunction, QueryParameter, Request, RequestBody} from '../../../index';
-import {createContextWithHttpRequest} from './context';
-import {callAzureFunction} from '../azure-function';
-import {HttpStatus} from "../../../decorators/http/http-status";
+import { Context, HttpRequest, HttpResponse } from '@azure/functions';
+import { HttpFunction, QueryParameter, Request, RequestBody } from '../../../index';
+import { createContextWithHttpRequest } from './context';
+import { callAzureFunction } from '../azure-function';
+import { HttpStatus } from '../../../decorators/http/http-status';
 
 type body = {
     id: number;
@@ -24,13 +24,13 @@ describe('HTTP function decorators', () => {
                 return {
                     body: {
                         body: body,
-                        queryParameter: {query: query},
+                        queryParameter: { query: query },
                     } as echoResponse,
                 };
             }
         }
 
-        const body: body = {id: 42};
+        const body: body = { id: 42 };
 
         const context = createContextWithHttpRequest({
             rawBody: JSON.stringify(body),
@@ -47,9 +47,8 @@ describe('HTTP function decorators', () => {
         const createInvalidClass = () => {
             // @ts-ignore
             @HttpFunction()
-                // @ts-ignore
-            class Bla {
-            }
+            // @ts-ignore
+            class Bla {}
         };
 
         expect(createInvalidClass).toThrow('@HttpFunction can only be applied to functions');
@@ -65,7 +64,9 @@ describe('HTTP function decorators', () => {
 
         // @ts-ignore
         const callWithNoArguments = async () => Echo.httpTrigger();
-        await expect(callWithNoArguments).rejects.toThrow('@HttpFunction annotated method httpTrigger was provided no arguments');
+        await expect(callWithNoArguments).rejects.toThrow(
+            '@HttpFunction annotated method httpTrigger was provided no arguments'
+        );
     });
 
     it('does not allow @HttpFunction with non context as argument', async () => {
@@ -91,7 +92,7 @@ describe('HTTP function decorators', () => {
         }
 
         // @ts-ignore
-        const callWithContextWithoutReq = async () => Echo.httpTrigger(({req: {id: 'abc'}} as unknown) as Context);
+        const callWithContextWithoutReq = async () => Echo.httpTrigger(({ req: { id: 'abc' } } as unknown) as Context);
         await expect(callWithContextWithoutReq).rejects.toThrow(
             '@HttpFunction annotated method httpTrigger was provided a context without or invalid http request'
         );
@@ -123,32 +124,31 @@ describe('HTTP function decorators', () => {
         class ErrorFunction {
             @HttpFunction()
             static async httpTrigger(): Promise<HttpResponse> {
-                throw new Error('Internal error thrown')
+                throw new Error('Internal error thrown');
             }
         }
 
         const context = createContextWithHttpRequest();
 
-        await expect(() => callAzureFunction(ErrorFunction.httpTrigger, context)).rejects.toThrowError('Internal error thrown')
+        await expect(() => callAzureFunction(ErrorFunction.httpTrigger, context)).rejects.toThrowError(
+            'Internal error thrown'
+        );
     });
 
     it('returns error status for decorated errors', async () => {
-
         @HttpStatus(404)
-        class NotFoundError extends Error {
-
-        }
+        class NotFoundError extends Error {}
 
         class ErrorFunction {
             @HttpFunction()
             static async httpTrigger(): Promise<HttpResponse> {
-                throw new NotFoundError('Entity not found')
+                throw new NotFoundError('Entity not found');
             }
         }
 
         const context = createContextWithHttpRequest();
 
-        const response = await callAzureFunction(ErrorFunction.httpTrigger, context)
-        expect(response.status).toEqual(404)
+        const response = await callAzureFunction(ErrorFunction.httpTrigger, context);
+        expect(response.status).toEqual(404);
     });
 });

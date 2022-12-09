@@ -1,7 +1,6 @@
-import {Context} from "@azure/functions";
+import { Context } from '@azure/functions';
 
 const HttpStatusPrototypeProperty = Symbol('_HttpStatus');
-
 
 /**
  * The {@link HttpStatus @HttpStatus} decorator injects a http status value into decorated error instances.
@@ -12,45 +11,41 @@ const HttpStatusPrototypeProperty = Symbol('_HttpStatus');
 export function HttpStatus(status: number): ClassDecorator {
     return (target: Function) => {
         Object.defineProperty(target.prototype, HttpStatusPrototypeProperty, {
-            value: status
-        })
+            value: status,
+        });
 
         Object.defineProperty(target.prototype, '_HttpStatus', {
-            value: status
-        })
+            value: status,
+        });
     };
 }
 
 export function findHttpStatusBySymbol(target: any): number | undefined {
     try {
-        const status = target?.[HttpStatusPrototypeProperty]
+        const status = target?.[HttpStatusPrototypeProperty];
 
-        const statusCastToNumber = Number(status)
+        const statusCastToNumber = Number(status);
 
         if (isNaN(statusCastToNumber)) {
-            return undefined
+            return undefined;
         }
 
-        return statusCastToNumber
+        return statusCastToNumber;
     } catch (e) {
-        return undefined
+        return undefined;
     }
 }
 
-export function handleError(
-    target: Object,
-    context: Context
-) {
-
-    const statusFromErrorInstance = findHttpStatusBySymbol(target)
+export function handleError(target: Object, context: Context) {
+    const statusFromErrorInstance = findHttpStatusBySymbol(target);
 
     if (statusFromErrorInstance) {
         const errorResponseFromDecorator = {
-            status: statusFromErrorInstance
-        }
-        context.res = errorResponseFromDecorator
-        return errorResponseFromDecorator
+            status: statusFromErrorInstance,
+        };
+        context.res = errorResponseFromDecorator;
+        return errorResponseFromDecorator;
     }
 
-    throw target
+    throw target;
 }
