@@ -26,4 +26,42 @@ describe('@HttpStatus decorator', () => {
 
         expect(createInvalidClass).toThrow('Cannot redefine property: _HttpStatus')
     });
+
+    it('on child overrides @HttpStatus from parent class', async () => {
+
+        @HttpStatus(400)
+        class BadRequest {
+
+        }
+
+        @HttpStatus(418)
+        class TeaPot extends BadRequest {
+
+        }
+
+        const badRequestInstance = new BadRequest()
+        const teapotInstance = new TeaPot()
+
+        // @ts-ignore
+        expect(badRequestInstance._HttpStatus).toEqual(400)
+        // @ts-ignore
+        expect(teapotInstance._HttpStatus).toEqual(418)
+    });
+
+    it('on parent class inherits @HttpStatus to child class', async () => {
+
+        @HttpStatus(404)
+        class NotFound {
+
+        }
+
+        class UserNotFound extends NotFound {
+
+        }
+
+        const userNotFoundInstance = new UserNotFound()
+
+        // @ts-ignore
+        expect(userNotFoundInstance._HttpStatus).toEqual(404)
+    });
 })
