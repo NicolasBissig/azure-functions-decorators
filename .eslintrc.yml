@@ -7,3 +7,5 @@ plugins:
 root: true
 ignorePatterns:
     - '**/dist/**'
+env:
+    node: true
