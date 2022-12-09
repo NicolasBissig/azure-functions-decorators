@@ -1,5 +1,5 @@
 import { HttpRequest } from '@azure/functions';
-import { HttpFunction, Request } from '../../../src';
+import { HttpFunction, Request } from '../../../index';
 import { createContextWithHttpRequest } from './context';
 import { callAzureFunction } from '../azure-function';
 

@@ -4,6 +4,7 @@ import { handlePathParameter } from './path-parameter';
 import { isContext, isFunction, isHttpRequest } from './type-guards';
 import { handleContextParameter } from '../context';
 import { handleRequestParameter } from './http-request';
+import { handleError } from './http-status';
 
 /**
  * The {@link HttpFunction @HttpFunction} decorator marks a static class function as a httpTrigger function.
@@ -28,7 +29,7 @@ export function HttpFunction(): MethodDecorator {
             throw new Error('@HttpFunction can only be applied to functions');
         }
 
-        descriptor.value = function(...args: any[]) {
+        descriptor.value = async function(...args: any[]) {
             if (!args || args.length === 0) {
                 throw new Error(`@HttpFunction annotated method ${propertyName.toString()} was provided no arguments`);
             }
@@ -52,7 +53,11 @@ export function HttpFunction(): MethodDecorator {
             handleQueryParameters(target, propertyName, req, args);
             handlePathParameter(target, propertyName, req, args);
 
-            return method.apply(this, args);
+            try {
+                return await method.apply(this, args);
+            } catch (e) {
+                return handleError(e as Object, context);
+            }
         };
     };
 }
