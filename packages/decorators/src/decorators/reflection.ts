@@ -35,7 +35,7 @@ export function applyToMarked<T>(
     target: object,
     propertyName: string | symbol,
     key: symbol,
-    handler: (parameter: T) => any
+    handler: (parameter: T) => unknown
 ) {
     const markedParameters: T[] = Reflect.getOwnMetadata(key, target, propertyName);
     if (markedParameters) {

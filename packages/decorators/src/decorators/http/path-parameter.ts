@@ -27,7 +27,7 @@ function findPathParameter(req: HttpRequest, parameter: string): string | undefi
     return value ? value : undefined;
 }
 
-export function handlePathParameter(target: object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
+export function handlePathParameter(target: object, propertyName: string | symbol, req: HttpRequest, args: unknown[]) {
     applyToMarked<PathParameterDescriptor>(
         target,
         propertyName,

@@ -14,7 +14,7 @@ export function RequestBody(): ParameterDecorator {
     };
 }
 
-function parseBody(req: HttpRequest): any {
+function parseBody(req: HttpRequest): unknown {
     try {
         return JSON.parse(req.rawBody);
     } catch {
@@ -26,7 +26,7 @@ export function handleRequestBodyParameter(
     target: object,
     propertyName: string | symbol,
     req: HttpRequest,
-    args: any[]
+    args: unknown[]
 ) {
     applyToMarked<number>(target, propertyName, BodyMetaDataKey, (parameter) => (args[parameter] = parseBody(req)));
 }

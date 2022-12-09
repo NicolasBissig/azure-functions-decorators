@@ -13,10 +13,6 @@ export function HttpStatus(status: number): ClassDecorator {
         Object.defineProperty(target.prototype, HttpStatusPrototypeProperty, {
             value: status,
         });
-
-        Object.defineProperty(target.prototype, '_HttpStatus', {
-            value: status,
-        });
     };
 }
 
