@@ -1,6 +1,6 @@
 import { Context, HttpRequest } from '@azure/functions';
 
-export function isFunction(f: unknown): f is Function {
+export function isFunction(f: unknown): f is (...args: unknown[]) => unknown {
     return !!f && f instanceof Function;
 }
 
