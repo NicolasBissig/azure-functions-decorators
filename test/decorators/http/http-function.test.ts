@@ -64,8 +64,8 @@ describe('HTTP function decorators', () => {
         }
 
         // @ts-ignore
-        const callWithNoArguments = () => Echo.httpTrigger();
-        expect(callWithNoArguments).toThrow('@HttpFunction annotated method httpTrigger was provided no arguments');
+        const callWithNoArguments = async () => Echo.httpTrigger();
+        await expect(callWithNoArguments).rejects.toThrow('@HttpFunction annotated method httpTrigger was provided no arguments');
     });
 
     it('does not allow @HttpFunction with non context as argument', async () => {
@@ -76,8 +76,8 @@ describe('HTTP function decorators', () => {
             }
         }
 
-        const callWithNonContext = () => Echo.httpTrigger('15');
-        expect(callWithNonContext).toThrow(
+        const callWithNonContext = async () => Echo.httpTrigger('15');
+        await expect(callWithNonContext).rejects.toThrow(
             '@HttpFunction annotated method httpTrigger was not provided a Context as first argument'
         );
     });
@@ -91,8 +91,8 @@ describe('HTTP function decorators', () => {
         }
 
         // @ts-ignore
-        const callWithContextWithoutReq = () => Echo.httpTrigger(({req: {id: 'abc'}} as unknown) as Context);
-        expect(callWithContextWithoutReq).toThrow(
+        const callWithContextWithoutReq = async () => Echo.httpTrigger(({req: {id: 'abc'}} as unknown) as Context);
+        await expect(callWithContextWithoutReq).rejects.toThrow(
             '@HttpFunction annotated method httpTrigger was provided a context without or invalid http request'
         );
     });
