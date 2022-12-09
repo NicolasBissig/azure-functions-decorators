@@ -1,9 +1,9 @@
 {
     "version": "0.2.0",
     "license": "MIT",
-    "main": "dist/index.js",
+    "main": "dist/index.cjs",
+    "module": "dist/index.esm.js",
     "typings": "dist/index.d.ts",
-    "module": "dist/azure-functions-decorators.esm.js",
     "files": [
         "dist",
         "src"
@@ -24,16 +24,6 @@
         "type": "git",
         "url": "https://github.com/NicolasBissig/azure-functions-decorators"
     },
-    "size-limit": [
-        {
-            "path": "dist/azure-functions-decorators.cjs.production.min.js",
-            "limit": "10 KB"
-        },
-        {
-            "path": "dist/azure-functions-decorators.esm.js",
-            "limit": "10 KB"
-        }
-    ],
     "dependencies": {
         "reflect-metadata": "^0.1.13"
     },
