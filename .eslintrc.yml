@@ -9,3 +9,8 @@ ignorePatterns:
     - '**/dist/**'
 env:
     node: true
+
+overrides:
+    - files: ['**/__test__/**']
+      rules:
+          '@typescript-eslint/ban-ts-comment': [warn]
