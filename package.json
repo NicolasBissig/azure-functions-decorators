@@ -1,16 +1,20 @@
 {
-  "name": "root",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
-    "lerna": "6.1.0"
-  },
-  "scripts": {
-    "start": "lerna run start",
-    "build": "lerna run build",
-    "test": "lerna run test",
-    "lint": "lerna run lint"
-  }
+    "name": "root",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "devDependencies": {
+        "lerna": "6.1.0",
+        "@typescript-eslint/eslint-plugin": "5.46.0",
+        "@typescript-eslint/parser": "5.46.0",
+        "eslint": "8.29.0",
+        "prettier": "2.8.1"
+    },
+    "scripts": {
+        "start": "lerna run start",
+        "build": "lerna run build",
+        "test": "lerna run test",
+        "lint": "prettier --write . && eslint ."
+    }
 }
