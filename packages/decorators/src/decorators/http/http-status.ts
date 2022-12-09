@@ -2,6 +2,9 @@ import { Context } from '@azure/functions';
 
 const HttpStatusPrototypeProperty = Symbol('_HttpStatus');
 
+type HasPrototype = {
+    prototype: unknown;
+};
 /**
  * The {@link HttpStatus @HttpStatus} decorator injects a http status value into decorated error instances.
  *
@@ -9,7 +12,7 @@ const HttpStatusPrototypeProperty = Symbol('_HttpStatus');
  * by {@link HttpFunction @HttpFunction} the response status is set accordingly.
  */
 export function HttpStatus(status: number): ClassDecorator {
-    return (target: Function) => {
+    return <F extends HasPrototype>(target: F) => {
         Object.defineProperty(target.prototype, HttpStatusPrototypeProperty, {
             value: status,
         });
