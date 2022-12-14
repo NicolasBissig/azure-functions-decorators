@@ -34,8 +34,7 @@ class FunctionApp {
 First, update the [CHANGELOG](./CHANGELOG.md). Then run these commands.
 
 ```shell
-npm version [<newversion> | major | minor | patch | premajor | preminor | prepatch | prerelease]
-git push --tags
+lerna version --no-private
 ```
 
 Github Actions will publish a new release to the npm registry and create a new release on Github.
