@@ -2,7 +2,7 @@ name: Build and Release
 
 on:
     push:
-        tags: ['v*']
+        tags: ['*@*']
 
 env:
     NODE_VERSION: '16.x'
@@ -20,10 +20,7 @@ jobs:
 
             - run: npm ci
             - run: npm test
-            - id: publish
-              uses: JS-DevTools/npm-publish@v1
-              with:
-                  token: ${{ secrets.NPM_TOKEN }}
+            - run: lerna exec npm publish
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
