@@ -23,13 +23,13 @@ import { handleError } from './http-status';
  *        {@link Context @Context}
  */
 export function HttpFunction(): MethodDecorator {
-    return (target: Object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
+    return (target: object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
         const method = descriptor?.value;
         if (!isFunction(method)) {
             throw new Error('@HttpFunction can only be applied to functions');
         }
 
-        descriptor.value = async function(...args: any[]) {
+        descriptor.value = async function (...args: unknown[]) {
             if (!args || args.length === 0) {
                 throw new Error(`@HttpFunction annotated method ${propertyName.toString()} was provided no arguments`);
             }
@@ -56,7 +56,7 @@ export function HttpFunction(): MethodDecorator {
             try {
                 return await method.apply(this, args);
             } catch (e) {
-                return handleError(e as Object, context);
+                return handleError(e as object, context);
             }
         };
     };

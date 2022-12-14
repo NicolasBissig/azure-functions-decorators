@@ -49,7 +49,7 @@ describe('@HttpStatus decorator', () => {
     });
 
     it('assigns status correctly from numeric string', async () => {
-        @HttpStatus(('418' as unknown) as number)
+        @HttpStatus('418' as unknown as number)
         class TeaPot {}
 
         const teapotInstance = new TeaPot();
@@ -58,7 +58,7 @@ describe('@HttpStatus decorator', () => {
     });
 
     it('assigns undefined from non-numeric string', async () => {
-        @HttpStatus(('teapot' as unknown) as number)
+        @HttpStatus('teapot' as unknown as number)
         class TeaPot {}
 
         const teapotInstance = new TeaPot();

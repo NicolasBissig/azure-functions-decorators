@@ -9,12 +9,12 @@ const BodyMetaDataKey = Symbol('RequestBody');
  * If the request body is not parseable, undefined will be injected.
  */
 export function RequestBody(): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+    return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
         markParameter(target, propertyKey, BodyMetaDataKey, parameterIndex, 1);
     };
 }
 
-function parseBody(req: HttpRequest): any {
+function parseBody(req: HttpRequest): unknown {
     try {
         return JSON.parse(req.rawBody);
     } catch {
@@ -23,10 +23,10 @@ function parseBody(req: HttpRequest): any {
 }
 
 export function handleRequestBodyParameter(
-    target: Object,
+    target: object,
     propertyName: string | symbol,
     req: HttpRequest,
-    args: any[]
+    args: unknown[]
 ) {
-    applyToMarked<number>(target, propertyName, BodyMetaDataKey, parameter => (args[parameter] = parseBody(req)));
+    applyToMarked<number>(target, propertyName, BodyMetaDataKey, (parameter) => (args[parameter] = parseBody(req)));
 }

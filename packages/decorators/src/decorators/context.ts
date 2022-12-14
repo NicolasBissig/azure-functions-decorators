@@ -8,16 +8,16 @@ const ContextMetaDataKey = Symbol('Context');
  * The type of the injected parameter should be {@link Context} from '@azure/functions'.
  */
 export function Context(): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+    return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
         markParameter(target, propertyKey, ContextMetaDataKey, parameterIndex, 1);
     };
 }
 
 export function handleContextParameter(
-    target: Object,
+    target: object,
     propertyName: string | symbol,
     context: AzureContext,
-    args: any[]
+    args: unknown[]
 ) {
-    applyToMarked<number>(target, propertyName, ContextMetaDataKey, parameter => (args[parameter] = context));
+    applyToMarked<number>(target, propertyName, ContextMetaDataKey, (parameter) => (args[parameter] = context));
 }

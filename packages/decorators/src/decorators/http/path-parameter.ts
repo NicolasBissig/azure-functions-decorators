@@ -14,7 +14,7 @@ type PathParameterDescriptor = {
  * @param key of the path parameter value to inject.
  */
 export function PathParameter(key: string): ParameterDecorator {
-    return (target: Object, propertyKey: string | symbol, parameterIndex: number) => {
+    return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
         const markedParameter = { index: parameterIndex, name: key };
         markParameterWithValue<PathParameterDescriptor>(target, propertyKey, PathParameterMetaDataKey, markedParameter);
     };
@@ -27,11 +27,11 @@ function findPathParameter(req: HttpRequest, parameter: string): string | undefi
     return value ? value : undefined;
 }
 
-export function handlePathParameter(target: Object, propertyName: string | symbol, req: HttpRequest, args: any[]) {
+export function handlePathParameter(target: object, propertyName: string | symbol, req: HttpRequest, args: unknown[]) {
     applyToMarked<PathParameterDescriptor>(
         target,
         propertyName,
         PathParameterMetaDataKey,
-        parameter => (args[parameter.index] = findPathParameter(req, parameter.name))
+        (parameter) => (args[parameter.index] = findPathParameter(req, parameter.name))
     );
 }

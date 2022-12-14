@@ -1,16 +1,16 @@
 import { Context, HttpRequest } from '@azure/functions';
 
-const defaultHttpRequest: HttpRequest = ({
+const defaultHttpRequest: HttpRequest = {
     method: 'GET',
-} as unknown) as HttpRequest;
+} as unknown as HttpRequest;
 
 export function createHttpRequest(req?: Partial<HttpRequest>): HttpRequest {
     return { ...defaultHttpRequest, ...req };
 }
 
-const defaultContext: Context = ({
+const defaultContext: Context = {
     req: defaultHttpRequest,
-} as unknown) as Context;
+} as unknown as Context;
 
 export function createContext(context?: Partial<Context>): Context {
     return { ...defaultContext, ...context };

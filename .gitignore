@@ -3,5 +3,5 @@
 **/.idea
 **/coverage
 # stryker temp files
-.stryker-tmp
+**/.stryker-tmp
 **/reports
