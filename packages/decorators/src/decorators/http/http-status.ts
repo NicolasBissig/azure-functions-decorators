@@ -1,4 +1,4 @@
-import { Context, HttpResponse } from '@azure/functions';
+import { HttpResponse } from '@azure/functions';
 
 const HttpStatusPrototypeProperty = Symbol('_HttpStatus');
 
@@ -39,7 +39,7 @@ export function findHttpStatusBySymbol(target: any): number | undefined {
     }
 }
 
-export function handleError(target: unknown, context: Context) {
+export function handleError(target: unknown): HttpResponse {
     const statusFromErrorInstance = findHttpStatusBySymbol(target);
 
     if (statusFromErrorInstance) {
@@ -48,7 +48,6 @@ export function handleError(target: unknown, context: Context) {
             status: statusFromErrorInstance,
             ...bodyFromErrorInstance,
         };
-        context.res = errorResponseFromDecorator;
         return errorResponseFromDecorator;
     }
 
