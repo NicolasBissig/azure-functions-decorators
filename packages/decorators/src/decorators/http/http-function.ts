@@ -20,6 +20,7 @@ import { handleError } from './http-status';
  *        {@link PathParameter @PathParameter}
  *        {@link QueryParameter @QueryParameter}
  *        {@link RequestBody @RequestBody}
+ *        {@link HttpStatus @HttpStatus}
  *        {@link Context @Context}
  */
 export function HttpFunction(): MethodDecorator {
@@ -56,7 +57,7 @@ export function HttpFunction(): MethodDecorator {
             try {
                 return await method.apply(this, args);
             } catch (e) {
-                return handleError(e as object, context);
+                return handleError(e, context);
             }
         };
     };

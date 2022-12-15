@@ -150,5 +150,34 @@ describe('HTTP function decorators', () => {
 
         const response = await callAzureFunction(ErrorFunction.httpTrigger, context);
         expect(response.status).toEqual(404);
+        expect(response.body).toBeUndefined();
+    });
+
+    it('returns error status and body for decorated errors', async () => {
+        @HttpStatus(404)
+        class NotFoundErrorWithPayload extends Error {
+            constructor(public readonly message: string, public readonly errorCode: string) {
+                super(message);
+            }
+        }
+
+        class ErrorFunction {
+            @HttpFunction()
+            static async httpTrigger(): Promise<HttpResponse> {
+                throw new NotFoundErrorWithPayload('Entity not found', '1234-1111-001');
+            }
+        }
+
+        const context = createContextWithHttpRequest();
+
+        const response = await callAzureFunction(ErrorFunction.httpTrigger, context);
+        expect(response.status).toEqual(404);
+        expect(response.body).toEqual(
+            JSON.stringify({
+                message: 'Entity not found',
+                errorCode: '1234-1111-001',
+            })
+        );
+        expect(response.headers?.['Content-Type']).toEqual('application/json');
     });
 });
