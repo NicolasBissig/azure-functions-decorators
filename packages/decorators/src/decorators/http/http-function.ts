@@ -56,7 +56,7 @@ export function HttpFunction(): MethodDecorator {
             try {
                 return await method.apply(this, args);
             } catch (e) {
-                return handleError(e as object, context);
+                return handleError(e, context);
             }
         };
     };
