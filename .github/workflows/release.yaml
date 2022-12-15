@@ -23,7 +23,7 @@ jobs:
             - run: npm test
             - run: lerna exec npm publish
               env:
-                NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
             - name: Upload artifact
               uses: actions/upload-artifact@v3
