@@ -4,11 +4,6 @@
     "workspaces": [
         "packages/*"
     ],
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run lint:fix"
-        }
-    },
     "devDependencies": {
         "lerna": "6.1.0",
         "@typescript-eslint/eslint-plugin": "5.46.1",
