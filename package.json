@@ -4,19 +4,25 @@
     "workspaces": [
         "packages/*"
     ],
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run lint:fix"
+        }
+    },
     "devDependencies": {
         "lerna": "6.1.0",
         "@typescript-eslint/eslint-plugin": "5.46.1",
         "@typescript-eslint/parser": "5.46.1",
         "eslint": "8.29.0",
-        "prettier": "2.8.1"
+        "prettier": "2.8.1",
+        "husky": "8.0.2"
     },
     "scripts": {
+        "prepare": "husky install",
         "start": "lerna run start",
         "build": "lerna run build",
         "test": "lerna run test",
         "lint": "prettier --check . && eslint .",
         "lint:fix": "prettier --write . && eslint --fix ."
-    },
-    "version": "0.3.0"
+    }
 }
