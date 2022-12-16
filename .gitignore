@@ -5,3 +5,5 @@
 # stryker temp files
 **/.stryker-tmp
 **/reports
+
+**/*.settings.json
