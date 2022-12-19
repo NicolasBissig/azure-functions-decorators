@@ -1,10 +1,41 @@
 import { handleRequestBodyParameter } from './request-body';
 import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';
-import { isContext, isFunction, isHttpRequest } from './type-guards';
+import { isContext, isFunction, isHttpRequest, isHttpResponse } from './type-guards';
 import { handleContextParameter } from '../context';
 import { handleRequestParameter } from './http-request';
 import { handleError } from './http-status';
+import { HttpResponse } from '@azure/functions';
+
+type ResultMapper = <T>(result: T) => HttpResponse;
+
+type HttpFunctionOptions = {
+    ResultMapper?: ResultMapper;
+};
+
+const defaultResultMapper: ResultMapper = (result: unknown): HttpResponse => {
+    if (!result) {
+        // is undefined, return empty success response
+        return { status: 204, statusCode: 204 };
+    }
+
+    if (isHttpResponse(result)) {
+        // is already a HttpResponse so return it
+        return result;
+    }
+
+    if (typeof result === 'object') {
+        // is an object, serialize it in the body
+        return {
+            body: JSON.stringify(result),
+        };
+    }
+
+    return {
+        // is probably a primitive, return it as body
+        body: result,
+    };
+};
 
 /**
  * The {@link HttpFunction @HttpFunction} decorator marks a static class function as a httpTrigger function.
@@ -23,7 +54,7 @@ import { handleError } from './http-status';
  *        {@link HttpStatus @HttpStatus}
  *        {@link Context @Context}
  */
-export function HttpFunction(): MethodDecorator {
+export function HttpFunction(opts?: HttpFunctionOptions): MethodDecorator {
     return (target: object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
         const method = descriptor?.value;
         if (!isFunction(method)) {
@@ -55,7 +86,12 @@ export function HttpFunction(): MethodDecorator {
             handlePathParameter(target, propertyName, req, args);
 
             try {
-                return await method.apply(this, args);
+                const result = await method.apply(this, args);
+                if (opts?.ResultMapper) {
+                    return opts.ResultMapper(result);
+                } else {
+                    return defaultResultMapper(result);
+                }
             } catch (e) {
                 return handleError(e);
             }
