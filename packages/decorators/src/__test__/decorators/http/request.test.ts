@@ -15,6 +15,6 @@ describe('@Request decorator', () => {
         const context = createContextWithHttpRequest();
 
         const result = await callAzureFunction(RequestEcho.httpTrigger, context);
-        expect(result).toEqual(context.req);
+        expect(JSON.parse(result.body)).toEqual(context.req);
     });
 });
