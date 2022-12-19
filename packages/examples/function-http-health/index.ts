@@ -1,5 +1,4 @@
 import { HttpFunction } from 'azure-functions-decorators';
-import { HttpResponse } from '@azure/functions';
 
 class Example {
     @HttpFunction()

@@ -1,5 +1,4 @@
 import { HttpFunction, HttpStatus } from 'azure-functions-decorators';
-import { HttpResponse } from '@azure/functions';
 
 @HttpStatus(404)
 class UserNotFoundError extends Error {
