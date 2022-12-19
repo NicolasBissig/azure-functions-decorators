@@ -3,12 +3,8 @@ import { HttpResponse } from '@azure/functions';
 
 class Example {
     @HttpFunction()
-    static async queryParameterEcho(@QueryParameter('page') page: string): Promise<HttpResponse> {
-        return {
-            body: {
-                page,
-            },
-        };
+    static async queryParameterEcho(@QueryParameter('page') page: string): Promise<string> {
+        return page;
     }
 }
 

@@ -3,8 +3,8 @@ import { HttpResponse } from '@azure/functions';
 
 class Example {
     @HttpFunction()
-    static async echoBody(@RequestBody() body: unknown): Promise<HttpResponse> {
-        return { body: body };
+    static async echoBody(@RequestBody() body: unknown): Promise<unknown> {
+        return body;
     }
 }
 
