@@ -7,13 +7,15 @@ import { handleRequestParameter } from './http-request';
 import { handleError } from './http-status';
 import { HttpResponse } from '@azure/functions';
 
-type ResultMapper = <T>(result: T) => HttpResponse;
+type ResultMapper<T> = (result: T) => HttpResponse;
 
-type HttpFunctionOptions = {
-    ResultMapper?: ResultMapper;
+type FullHttpFunctionOptions = {
+    ResultMapper: ResultMapper<any>;
 };
 
-const defaultResultMapper: ResultMapper = (result: unknown): HttpResponse => {
+type HttpFunctionOptions = Partial<FullHttpFunctionOptions>;
+
+const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpResponse => {
     if (!result) {
         // is undefined, return empty success response
         return { status: 204, statusCode: 204 };
@@ -37,6 +39,10 @@ const defaultResultMapper: ResultMapper = (result: unknown): HttpResponse => {
     };
 };
 
+const defaultOptions = {
+    ResultMapper: defaultResultMapper,
+} as FullHttpFunctionOptions;
+
 /**
  * The {@link HttpFunction @HttpFunction} decorator marks a static class function as a httpTrigger function.
  * This decorator must be present for HTTP related decorators to work.
@@ -54,7 +60,12 @@ const defaultResultMapper: ResultMapper = (result: unknown): HttpResponse => {
  *        {@link HttpStatus @HttpStatus}
  *        {@link Context @Context}
  */
-export function HttpFunction(opts?: HttpFunctionOptions): MethodDecorator {
+export function HttpFunction(options?: HttpFunctionOptions): MethodDecorator {
+    const mergedOptions = {
+        ...defaultOptions,
+        ...options,
+    };
+
     return (target: object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
         const method = descriptor?.value;
         if (!isFunction(method)) {
@@ -87,11 +98,7 @@ export function HttpFunction(opts?: HttpFunctionOptions): MethodDecorator {
 
             try {
                 const result = await method.apply(this, args);
-                if (opts?.ResultMapper) {
-                    return opts.ResultMapper(result);
-                } else {
-                    return defaultResultMapper(result);
-                }
+                return mergedOptions.ResultMapper(result);
             } catch (e) {
                 return handleError(e);
             }

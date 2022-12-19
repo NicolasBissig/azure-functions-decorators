@@ -180,4 +180,27 @@ describe('HTTP function decorators', () => {
         );
         expect(response.headers?.['Content-Type']).toEqual('application/json');
     });
+
+    it('applies the result transformer correctly', async () => {
+        const message = 'Hello World!';
+
+        class ResultTransformer {
+            @HttpFunction({
+                ResultMapper: (result: string) => {
+                    return {
+                        body: { message: result },
+                    };
+                },
+            })
+            static async httpTrigger(): Promise<string> {
+                return message;
+            }
+        }
+
+        const context = createContextWithHttpRequest();
+        const response = await callAzureFunction(ResultTransformer.httpTrigger, context);
+        expect(response.body).toEqual({
+            message: message,
+        });
+    });
 });
