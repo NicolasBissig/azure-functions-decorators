@@ -31,8 +31,9 @@ describe('@Context decorator', () => {
             },
         });
 
-        const result: ContextEchoResponse = await callAzureFunction(ContextEcho.httpTrigger, context);
-        expect(result.page).toEqual(page);
-        expect(result.context).toBe(context);
+        const result = await callAzureFunction(ContextEcho.httpTrigger, context);
+        const resultBody: ContextEchoResponse = JSON.parse(result.body);
+        expect(resultBody.page).toEqual(page);
+        expect(resultBody.context).toEqual(context);
     });
 });

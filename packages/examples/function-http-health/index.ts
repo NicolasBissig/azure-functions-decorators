@@ -1,10 +1,9 @@
 import { HttpFunction } from 'azure-functions-decorators';
-import { HttpResponse } from '@azure/functions';
 
 class Example {
     @HttpFunction()
-    static async health(): Promise<HttpResponse> {
-        return { statusCode: 204 };
+    static async health(): Promise<void> {
+        return;
     }
 }
 

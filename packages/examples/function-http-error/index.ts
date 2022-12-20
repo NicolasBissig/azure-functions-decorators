@@ -1,5 +1,4 @@
 import { HttpFunction, HttpStatus } from 'azure-functions-decorators';
-import { HttpResponse } from '@azure/functions';
 
 @HttpStatus(404)
 class UserNotFoundError extends Error {
@@ -10,7 +9,7 @@ class UserNotFoundError extends Error {
 
 class Example {
     @HttpFunction()
-    static async customError(): Promise<HttpResponse> {
+    static async customError(): Promise<never> {
         throw new UserNotFoundError('user not found', '123-456');
     }
 }

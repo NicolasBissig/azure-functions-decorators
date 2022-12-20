@@ -1,5 +1,5 @@
-import { Context } from '@azure/functions';
+import { Context, HttpResponse } from '@azure/functions';
 
-export async function callAzureFunction<T>(func: (...args: any[]) => T, context: Context): Promise<T> {
+export async function callAzureFunction(func: (...args: any[]) => any, context: Context): Promise<HttpResponse> {
     return func(context);
 }

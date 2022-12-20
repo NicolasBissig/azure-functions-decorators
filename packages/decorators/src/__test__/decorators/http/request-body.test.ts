@@ -21,7 +21,7 @@ describe('@RequestBody decorator', () => {
         });
 
         const result = await callAzureFunction(EchoBody.httpTrigger, context);
-        expect(result).toEqual(input);
+        expect(JSON.parse(result.body)).toEqual(input);
     });
 
     it('passes undefined when not JSON', async () => {
@@ -30,6 +30,8 @@ describe('@RequestBody decorator', () => {
         });
 
         const result = await callAzureFunction(EchoBody.httpTrigger, context);
-        expect(result).toEqual(undefined);
+        expect(result.status).toEqual(204);
+        expect(result.statusCode).toEqual(204);
+        expect(result.body).toEqual(undefined);
     });
 });
