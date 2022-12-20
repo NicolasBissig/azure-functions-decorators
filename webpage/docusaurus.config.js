@@ -12,8 +12,8 @@ const title = 'azure functions decorators';
 const config = {
     title: title,
     tagline: 'Spring / NestJS like decorators for your Azure functions.',
-    url: 'https://your-docusaurus-test-site.com',
-    baseUrl: '/',
+    url: 'https://nicolasbissig.github.io',
+    baseUrl: '/azure-functions-decorators/',
     onBrokenLinks: 'throw',
     onBrokenMarkdownLinks: 'warn',
     favicon: 'img/favicon.ico',
