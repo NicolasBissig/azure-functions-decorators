@@ -1,0 +1,51 @@
+name: Deploy Webpage
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - '.github/workflows/deploy-webpage.yml'
+            - 'webpage/**'
+concurrency:
+    group: ${{ github.workflow }}
+    cancel-in-progress: true
+jobs:
+    deploy-webpage:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [16.x]
+
+        env:
+            CI: true
+            NODE_OPTIONS: --max-old-space-size=4096
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v2
+              with:
+                  # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+                  fetch-depth: 0
+
+            - name: use node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  registry-url: https://registry.npmjs.org/
+
+            - name: Webpage yarn install
+              run: npm ci
+              working-directory: webpage
+
+            - name: Build webpage
+              run: npm run build
+              working-directory: webpage
+
+            - name: Deploy webpage
+              uses: JamesIves/github-pages-deploy-action@3.7.1
+              with:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  BRANCH: gh-pages
+                  FOLDER: webpage/build

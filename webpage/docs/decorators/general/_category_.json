@@ -1,0 +1,8 @@
+{
+    "label": "General",
+    "position": 0,
+    "link": {
+        "type": "generated-index",
+        "description": "Decorators that are useful for all azure functions."
+    }
+}
