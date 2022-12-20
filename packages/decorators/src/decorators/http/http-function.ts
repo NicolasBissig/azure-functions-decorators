@@ -16,7 +16,7 @@ type FullHttpFunctionOptions = {
 type HttpFunctionOptions = Partial<FullHttpFunctionOptions>;
 
 const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpResponse => {
-    if (!result) {
+    if (result === undefined || result === null) {
         // is undefined, return empty success response
         return { status: 204, statusCode: 204 };
     }
