@@ -1,7 +1,8 @@
 //const RestControllerPrototypeProperty = Symbol('_RestController');
 
-import { Context, HttpMethod } from '@azure/functions';
+import { Context, HttpMethod, HttpResponse } from '@azure/functions';
 import { extractPath, toValidPath } from './parameters';
+import { constants } from 'http2';
 
 type HasPrototype = {
     prototype: any;
@@ -12,6 +13,11 @@ export type RequestMapping = {
     methods: HttpMethod[];
     regex: RegExp;
     func: (context: Context) => Promise<unknown>;
+};
+
+const notFoundResponse: HttpResponse = {
+    status: constants.HTTP_STATUS_NOT_FOUND,
+    statusCode: constants.HTTP_STATUS_NOT_FOUND,
 };
 
 export function RestController(): ClassDecorator {
@@ -26,6 +32,7 @@ export function RestController(): ClassDecorator {
 
             if (mapping.length === 0) {
                 console.error('could not find mapping for path: ' + path);
+                return notFoundResponse;
             }
 
             if (mapping.length !== 1) {

@@ -60,6 +60,6 @@ export function pathWithParametersToRegex(path: string): RegExp {
     const withParameters = replacedSlash.replaceAll(/{\w*}/gs, '[^\\/]+');
     // all optional path parameters, {name?}, are replaced with matcher that requires no characters (*) until /
     const optionalParameters = withParameters.replaceAll(/{\w*\?*}/gs, '[^\\/]*');
-    // make sure after the required path, the string ends ($)
-    return RegExp(optionalParameters + '$');
+    // make sure string starts (^) and ends ($)
+    return RegExp('^' + optionalParameters + '$');
 }
