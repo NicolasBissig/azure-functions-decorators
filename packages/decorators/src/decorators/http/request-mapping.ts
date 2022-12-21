@@ -9,14 +9,14 @@ import { injectParameters, parsePathWithParameters, pathWithParametersToRegex, t
 import { RequestMapping } from './rest-controller';
 import { defaultOptions, HttpFunctionOptions } from './http-function';
 
-export function RequestMapping(path: string, options?: HttpFunctionOptions): MethodDecorator {
+export function RequestMapping(path?: string, options?: HttpFunctionOptions): MethodDecorator {
     const mergedOptions = {
         ...defaultOptions,
         ...options,
     };
 
-    path = toValidPath(path);
-    const parameters = parsePathWithParameters(path);
+    const validPath = toValidPath(path);
+    const parameters = parsePathWithParameters(validPath);
 
     return (target: object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
         // @HttpFunction stuff
@@ -65,7 +65,7 @@ export function RequestMapping(path: string, options?: HttpFunctionOptions): Met
         const controller = target.constructor.prototype;
         const mappings = (controller.requestMappings as RequestMapping[]) || [];
 
-        const regex = pathWithParametersToRegex(path);
+        const regex = pathWithParametersToRegex(validPath);
 
         mappings.push({
             methods: [],
