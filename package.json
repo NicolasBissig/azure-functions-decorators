@@ -10,7 +10,7 @@
         "@typescript-eslint/parser": "5.46.1",
         "@types/node": "16.18.3",
         "@types/jest": "29.2.4",
-        "@azure/functions": "3.2.0",
+        "@azure/functions": "3.5.0",
         "eslint": "8.29.0",
         "prettier": "2.8.1",
         "husky": "8.0.2",
