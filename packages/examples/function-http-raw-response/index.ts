@@ -1,10 +1,11 @@
-import { HttpFunction, QueryParameter } from 'azure-functions-decorators';
+import { exportableRestController, QueryParameter, RequestMapping, RestController } from 'azure-functions-decorators';
 import { HttpResponse } from '@azure/functions';
 import { constants } from 'http2';
 
+@RestController()
 class Example {
-    @HttpFunction()
-    static async rawResponse(@QueryParameter('page') page: string): Promise<HttpResponse> {
+    @RequestMapping()
+    async rawResponse(@QueryParameter('page') page: string): Promise<HttpResponse> {
         return {
             status: constants.HTTP_STATUS_TEAPOT,
             body: {
@@ -14,4 +15,4 @@ class Example {
     }
 }
 
-export default Example.rawResponse;
+export default exportableRestController(() => new Example());

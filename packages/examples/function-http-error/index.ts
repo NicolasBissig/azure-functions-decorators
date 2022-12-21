@@ -1,4 +1,4 @@
-import { HttpFunction, HttpStatus } from 'azure-functions-decorators';
+import { exportableRestController, HttpStatus, RequestMapping, RestController } from 'azure-functions-decorators';
 
 @HttpStatus(404)
 class UserNotFoundError extends Error {
@@ -7,11 +7,12 @@ class UserNotFoundError extends Error {
     }
 }
 
+@RestController()
 class Example {
-    @HttpFunction()
-    static async customError(): Promise<never> {
+    @RequestMapping()
+    async customError(): Promise<never> {
         throw new UserNotFoundError('user not found', '123-456');
     }
 }
 
-export default Example.customError;
+export default exportableRestController(() => new Example());

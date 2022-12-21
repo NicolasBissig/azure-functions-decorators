@@ -1,7 +1,8 @@
-import { HttpFunction, QueryParameter } from 'azure-functions-decorators';
+import { exportableRestController, QueryParameter, RequestMapping, RestController } from 'azure-functions-decorators';
 
+@RestController()
 class Example {
-    @HttpFunction({
+    @RequestMapping('/', {
         ResultMapper: (page: string) => {
             return {
                 status: 201,
@@ -11,9 +12,9 @@ class Example {
             };
         },
     })
-    static async echo(@QueryParameter('page') page: string): Promise<string> {
+    async echo(@QueryParameter('page') page: string): Promise<string> {
         return page;
     }
 }
 
-export default Example.echo;
+export default exportableRestController(() => new Example());

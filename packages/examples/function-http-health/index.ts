@@ -1,10 +1,11 @@
-import { HttpFunction } from 'azure-functions-decorators';
+import { HttpFunction, RequestMapping, RestController, exportableRestController } from 'azure-functions-decorators';
 
+@RestController()
 class Example {
-    @HttpFunction()
-    static async health(): Promise<void> {
+    @RequestMapping()
+    async health(): Promise<void> {
         return;
     }
 }
 
-export default Example.health;
+export default exportableRestController(() => new Example());
