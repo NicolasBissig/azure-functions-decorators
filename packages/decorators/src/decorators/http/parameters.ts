@@ -47,7 +47,7 @@ export function injectParameters(context: Context, parameters: PathParameter[]):
     const requestedPath = extractPath(context);
     if (!requestedPath) return;
 
-    const segmentValues = requestedPath.split('/');
+    const segmentValues = toValidPath(requestedPath).split('/');
     parameters.forEach((parameter) => {
         request.params[parameter.name] = segmentValues[parameter.index];
     });
