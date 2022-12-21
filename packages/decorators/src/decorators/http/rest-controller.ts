@@ -3,6 +3,7 @@
 import { Context, HttpMethod, HttpResponse } from '@azure/functions';
 import { extractPath, toValidPath } from './parameters';
 import { constants } from 'http2';
+import { isFunction } from './type-guards';
 
 type HasPrototype = {
     prototype: any;
@@ -45,4 +46,16 @@ export function RestController(): ClassDecorator {
             return await mapping[0].func(context);
         };
     };
+}
+
+export function exportableRestController<T extends object>(creator: () => T): (context: Context) => unknown {
+    const controller = creator();
+
+    if (!('httpTrigger' in controller) || !isFunction(controller.httpTrigger)) {
+        throw new Error(
+            'Provided RestController has no valid internal httpTrigger, have you decorated it with @RestController?'
+        );
+    }
+
+    return controller.httpTrigger.bind(controller);
 }
