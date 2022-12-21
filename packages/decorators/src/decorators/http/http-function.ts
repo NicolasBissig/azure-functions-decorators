@@ -13,7 +13,7 @@ type FullHttpFunctionOptions = {
     ResultMapper: ResultMapper<any>;
 };
 
-type HttpFunctionOptions = Partial<FullHttpFunctionOptions>;
+export type HttpFunctionOptions = Partial<FullHttpFunctionOptions>;
 
 const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpResponse => {
     if (result === undefined || result === null) {
@@ -39,7 +39,7 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
     };
 };
 
-const defaultOptions = {
+export const defaultOptions = {
     ResultMapper: defaultResultMapper,
 } as FullHttpFunctionOptions;
 
