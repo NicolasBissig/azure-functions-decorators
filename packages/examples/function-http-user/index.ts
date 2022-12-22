@@ -1,4 +1,5 @@
 import {
+    DeleteMapping,
     GetMapping,
     HttpStatus,
     PathParameter,
@@ -18,9 +19,6 @@ type User = {
 @HttpStatus(constants.HTTP_STATUS_NOT_FOUND)
 class NotFoundError {}
 
-@HttpStatus(constants.HTTP_STATUS_CONFLICT)
-class ConflictError {}
-
 const createdResponse: (user: User) => HttpResponse = (user) => {
     return {
         status: constants.HTTP_STATUS_CREATED,
@@ -34,17 +32,17 @@ const createdResponse: (user: User) => HttpResponse = (user) => {
 
 @RestController()
 class UserController {
-    public users: User[] = [];
-    public maxId = 0;
+    public users: Record<number, User> = {};
+    public lastId = 0;
 
-    constructor(users: User[], startId: number) {
-        this.users = users || [];
-        this.maxId = startId || 0;
+    constructor(users: Record<number, User>, startId: number) {
+        this.users = users || {};
+        this.lastId = startId || 0;
     }
 
     @GetMapping()
     getAllUsers(): User[] {
-        return this.users;
+        return Object.values(this.users);
     }
 
     @GetMapping('/{userId}')
@@ -58,11 +56,16 @@ class UserController {
 
     @PostMapping()
     createUser(@RequestBody() user: User): HttpResponse {
-        user.id = this.maxId;
+        user.id = this.lastId;
         this.users[user.id] = user;
-        this.maxId++;
+        this.lastId++;
 
         return createdResponse(user);
+    }
+
+    @DeleteMapping('/{userId}')
+    deleteUser(@PathParameter('userId') userId: number): void {
+        delete this.users[userId];
     }
 }
 

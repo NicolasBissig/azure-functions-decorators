@@ -65,4 +65,20 @@ describe('function-http-user', () => {
         expect(resp.status).toBe(404);
         expect(await resp.text()).toEqual('');
     });
+
+    it('should delete user successfully', async () => {
+        const resp = await fetch(BASE_URL + '/user/' + 0, {
+            method: 'DELETE',
+        });
+
+        expect(resp.status).toBe(204);
+        expect(await resp.text()).toEqual('');
+    });
+
+    it('should return correct user list after deletion', async () => {
+        const resp = await fetch(BASE_URL + '/user');
+
+        expect(resp.status).toBe(200);
+        expect(await resp.json()).toEqual([{ ...user1, id: 1 }]);
+    });
 });
