@@ -14,14 +14,14 @@ const notFoundResponse: HttpResponse = {
     statusCode: constants.HTTP_STATUS_NOT_FOUND,
 };
 
-export function RestController(): ClassDecorator {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+type Constructor = {
+    new (...args: any[]): object;
+};
+
+export function RestController(): (c: Constructor) => any {
     return (constructor) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         return class extends constructor {
-            constructor(...args: any[]) {
+            constructor(...args: unknown[]) {
                 super(...args);
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 // @ts-ignore
