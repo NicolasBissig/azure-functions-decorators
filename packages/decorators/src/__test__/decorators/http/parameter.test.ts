@@ -152,6 +152,7 @@ describe('path regex tests', () => {
         expect(regex.test('/')).toBeTruthy();
         expect(regex.test('')).toBeFalsy();
         expect(regex.test('/users')).toBeFalsy();
+        expect(regex.test('/users/')).toBeFalsy();
     });
 
     it('should create valid regex', () => {
