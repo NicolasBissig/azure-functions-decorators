@@ -54,7 +54,7 @@ describe('@RequestMapping decorator', () => {
         expect(createInvalidClass).toThrow('@RequestMapping can only be applied to functions');
     });
 
-    it('does not allow @HttpFunction with no arguments', async () => {
+    it('returns not found on invalid arguments', async () => {
         @RestController()
         class Echo {
             @RequestMapping()
@@ -63,16 +63,16 @@ describe('@RequestMapping decorator', () => {
             }
         }
 
-        const callWithNoArguments = async () => {
-            // @ts-ignore
-            await toAzureFunction(() => new Echo())();
-        };
-        await expect(callWithNoArguments).rejects.toThrow(
-            '@RequestMapping annotated method httpTrigger was not provided a Context as first argument'
-        );
+        // @ts-ignore
+        const result = await toAzureFunction(() => new Echo())();
+
+        expect(result).toEqual({
+            status: 404,
+            statusCode: 404,
+        });
     });
 
-    it('does not allow @RequestMapping with non context as argument', async () => {
+    it('returns not found with non context as argument', async () => {
         @RestController()
         class Echo {
             @RequestMapping()
@@ -81,13 +81,13 @@ describe('@RequestMapping decorator', () => {
             }
         }
 
-        const callWithNonContext = async () => {
-            // @ts-ignore
-            await toAzureFunction(() => new Echo())('15');
-        };
-        await expect(callWithNonContext).rejects.toThrow(
-            '@RequestMapping annotated method httpTrigger was not provided a Context as first argument'
-        );
+        // @ts-ignore
+        const result = await toAzureFunction(() => new Echo())('15');
+
+        expect(result).toEqual({
+            status: 404,
+            statusCode: 404,
+        });
     });
 
     it('does not allow @RequestMapping with context without req as argument', async () => {
@@ -99,14 +99,14 @@ describe('@RequestMapping decorator', () => {
             }
         }
 
-        const callWithContextWithoutReq = async () => {
-            await toAzureFunction(() => new Echo())({
-                req: { id: 'abc' },
-            } as unknown as Context);
-        };
-        await expect(callWithContextWithoutReq).rejects.toThrow(
-            '@RequestMapping annotated method httpTrigger was provided a context without or invalid http request'
-        );
+        const result = await toAzureFunction(() => new Echo())({
+            req: { id: 'abc' },
+        } as unknown as Context);
+
+        expect(result).toEqual({
+            status: 404,
+            statusCode: 404,
+        });
     });
 
     it('does not allow @RequestMapping with invalid amount of decorated parameters', async () => {
