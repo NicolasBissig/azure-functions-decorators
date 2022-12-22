@@ -125,3 +125,31 @@ export function GetMapping(path?: string, options?: Omit<RequestMappingOptions, 
 export function PostMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['POST'] });
 }
+
+export function DeleteMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['DELETE'] });
+}
+
+export function HeadMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['HEAD'] });
+}
+
+export function PatchMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['PATCH'] });
+}
+
+export function PutMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['PUT'] });
+}
+
+export function OptionsMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['OPTIONS'] });
+}
+
+export function TraceMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['TRACE'] });
+}
+
+export function ConnectMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['CONNECT'] });
+}
