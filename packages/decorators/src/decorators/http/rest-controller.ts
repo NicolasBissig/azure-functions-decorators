@@ -1,9 +1,7 @@
-//const RestControllerPrototypeProperty = Symbol('_RestController');
-
 import { Context, HttpMethod, HttpResponse } from '@azure/functions';
 import { extractPath, toValidPath } from './parameters';
 import { constants } from 'http2';
-import { isFunction } from './type-guards';
+import { isFunction, isHttpRequest } from './type-guards';
 
 type HasPrototype = {
     prototype: any;
@@ -26,10 +24,21 @@ export function RestController(): ClassDecorator {
         const instance = target.prototype;
 
         instance.httpTrigger = async (context: Context) => {
+            if (!context) return notFoundResponse;
+
+            if (!isHttpRequest(context.req) || context.req.method === null) {
+                return notFoundResponse;
+            }
+            const method = context.req.method;
+
             const path = toValidPath(extractPath(context));
 
             const mappings = (instance.requestMappings as TestableRequestMapping[]) || [];
-            const mapping = mappings.filter((m) => m.regex.test(path));
+            const mapping = mappings
+                // only mappings with no explicit method, or where the requested method is included
+                .filter((m) => m.methods.length === 0 || m.methods.includes(method))
+                // only if the path matches
+                .filter((m) => m.regex.test(path));
 
             if (mapping.length === 0) {
                 console.error('could not find mapping for path: ' + path);
