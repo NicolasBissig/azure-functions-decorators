@@ -69,8 +69,5 @@ export function toAzureFunction<T extends object>(creator: () => T): (context: C
         );
     }
 
-    // we are sure that only HttpResponses can be returned.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return controller.httpTrigger.bind(controller);
+    return (controller as { httpTrigger: (context: Context) => Promise<HttpResponse> }).httpTrigger.bind(controller);
 }
