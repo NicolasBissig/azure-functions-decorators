@@ -48,7 +48,7 @@ export function RestController(): ClassDecorator {
     };
 }
 
-export function exportableRestController<T extends object>(creator: () => T): (context: Context) => unknown {
+export function toAzureFunction<T extends object>(creator: () => T): (context: Context) => Promise<HttpResponse> {
     const controller = creator();
 
     if (!('httpTrigger' in controller) || !isFunction(controller.httpTrigger)) {
@@ -57,5 +57,8 @@ export function exportableRestController<T extends object>(creator: () => T): (c
         );
     }
 
+    // we are sure that only HttpResponses can be returned.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return controller.httpTrigger.bind(controller);
 }

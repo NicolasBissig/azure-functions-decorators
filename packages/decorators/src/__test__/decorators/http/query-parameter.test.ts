@@ -1,10 +1,10 @@
-import { HttpFunction, QueryParameter } from '../../../index';
+import { QueryParameter, RequestMapping, RestController, toAzureFunction } from '../../../index';
 import { createContextWithHttpRequest } from './context';
-import { callAzureFunction } from '../azure-function';
 
+@RestController()
 class QueryParameterEcho {
-    @HttpFunction()
-    static async httpTrigger(@QueryParameter('page') page: string): Promise<string> {
+    @RequestMapping()
+    async httpTrigger(@QueryParameter('page') page: string): Promise<string> {
         return page;
     }
 }
@@ -18,14 +18,15 @@ describe('@QueryParameter decorator', () => {
             },
         });
 
-        const result = await callAzureFunction(QueryParameterEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new QueryParameterEcho())(context);
         expect(result.body).toEqual(page);
     });
 
     it('passes multiple query parameters correctly', async () => {
+        @RestController()
         class Echo {
-            @HttpFunction()
-            static async httpTrigger(
+            @RequestMapping()
+            async httpTrigger(
                 @QueryParameter('size') size: string,
                 @QueryParameter('token') token: string
             ): Promise<string[]> {
@@ -42,7 +43,7 @@ describe('@QueryParameter decorator', () => {
             },
         });
 
-        const result = await callAzureFunction(Echo.httpTrigger, context);
+        const result = await toAzureFunction(() => new Echo())(context);
         expect(JSON.parse(result.body)).toEqual([size, token]);
     });
 
@@ -51,7 +52,7 @@ describe('@QueryParameter decorator', () => {
             query: {},
         });
 
-        const result = await callAzureFunction(QueryParameterEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new QueryParameterEcho())(context);
         expect(result.status).toEqual(204);
         expect(result.statusCode).toEqual(204);
         expect(result.body).toEqual(undefined);
@@ -60,7 +61,7 @@ describe('@QueryParameter decorator', () => {
     it('should pass undefined when query parameter are not present', async () => {
         const context = createContextWithHttpRequest();
 
-        const result = await callAzureFunction(QueryParameterEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new QueryParameterEcho())(context);
         expect(result.status).toEqual(204);
         expect(result.statusCode).toEqual(204);
         expect(result.body).toEqual(undefined);

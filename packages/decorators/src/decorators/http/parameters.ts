@@ -3,7 +3,9 @@ import { Context } from '@azure/functions';
 export const REMAINING_PATH = 'RemainingPath';
 
 export function extractPath(context: Context, parameter?: string): string | undefined {
-    return context?.req?.params[parameter || REMAINING_PATH];
+    const params = context?.req?.params;
+    if (params === undefined) return undefined;
+    return params[parameter || REMAINING_PATH];
 }
 
 export function toValidPath(path: string | undefined): string {
