@@ -6,7 +6,7 @@ import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';
 import { handleError } from './http-status';
 import { injectParameters, parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
-import { RequestMapping } from './rest-controller';
+import { TestableRequestMapping } from './rest-controller';
 import { HttpResponse } from '@azure/functions';
 
 type ResultMapper<T> = (result: T) => HttpResponse;
@@ -99,7 +99,7 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
 
         // register the mapping in the controller
         const controller = target.constructor.prototype;
-        const mappings = (controller.requestMappings as RequestMapping[]) || [];
+        const mappings = (controller.requestMappings as TestableRequestMapping[]) || [];
 
         const regex = pathWithParametersToRegex(validPath);
 

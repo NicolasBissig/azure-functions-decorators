@@ -10,7 +10,7 @@ type HasPrototype = {
     name: string;
 };
 
-export type RequestMapping = {
+export type TestableRequestMapping = {
     methods: HttpMethod[];
     regex: RegExp;
     func: (context: Context) => Promise<unknown>;
@@ -28,7 +28,7 @@ export function RestController(): ClassDecorator {
         instance.httpTrigger = async (context: Context) => {
             const path = toValidPath(extractPath(context));
 
-            const mappings = (instance.requestMappings as RequestMapping[]) || [];
+            const mappings = (instance.requestMappings as TestableRequestMapping[]) || [];
             const mapping = mappings.filter((m) => m.regex.test(path));
 
             if (mapping.length === 0) {
