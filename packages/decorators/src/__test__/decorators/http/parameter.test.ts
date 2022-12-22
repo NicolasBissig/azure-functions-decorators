@@ -9,6 +9,10 @@ import {
 import { Context } from '@azure/functions';
 
 describe('extractPath tests', () => {
+    it('RemainingPath name should not change', () => {
+        expect(REMAINING_PATH).toEqual('RemainingPath');
+    });
+
     it('should extract path correctly', () => {
         const path = '/user/15';
         expect(
@@ -53,6 +57,7 @@ describe('extractPath tests', () => {
 describe('toValidPath tests', () => {
     it('should transform path correctly', () => {
         expect(toValidPath(undefined)).toEqual('/');
+        expect(toValidPath('')).toEqual('/');
         expect(toValidPath('user/15')).toEqual('/user/15');
         expect(toValidPath('/user/15')).toEqual('/user/15');
     });
@@ -141,6 +146,24 @@ describe('injectParameters tests', () => {
 
         expect(context?.req?.params['userId']).toEqual('15');
         expect(context).toEqual(expectedContext);
+    });
+
+    it('should not change context if no path', () => {
+        const path = '/user/{userId}';
+        const originalContext = {
+            req: {
+                params: {},
+            },
+        } as unknown as Context;
+        const expectedContext = {
+            req: {
+                params: {},
+            },
+        } as unknown as Context;
+
+        injectParameters(originalContext, parsePathWithParameters(path));
+
+        expect(originalContext).toEqual(expectedContext);
     });
 });
 
