@@ -1,13 +1,9 @@
-import { Context, toAzureFunction, PathParameter, RequestMapping, RestController } from 'azure-functions-decorators';
+import { PathParameter, RequestMapping, RestController, toAzureFunction } from 'azure-functions-decorators';
 
 @RestController()
 class Example {
     @RequestMapping('/{parameter?}')
-    async pathParameterEcho(
-        @Context() context: unknown,
-        @PathParameter('parameter') parameter: string
-    ): Promise<string> {
-        console.log(context);
+    async pathParameterEcho(@PathParameter('parameter') parameter: string): Promise<string> {
         return parameter;
     }
 }
