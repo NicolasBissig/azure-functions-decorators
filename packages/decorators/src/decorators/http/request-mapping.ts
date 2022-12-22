@@ -47,6 +47,29 @@ const defaultOptions = {
     methods: [],
 } as FullRequestMappingOptions;
 
+/**
+ * The {@link RequestMapping @RequestMapping} decorator marks a function inside a {@link RestController @RestController} as a http triggered function.
+ *
+ * The result from functions will be transformed into a {@link HttpResponse}.
+ *
+ * Errors thrown inside this function that are decorated with {@link HttpStatus @HttpStatus} will be transformed to their correct http error.
+ * All other errors will be a 500 error.
+ *
+ * This decorator must be present for http related parameter decorators to work.
+ * Supported parameter decorators are:
+ *
+ *      General:
+ *        {@link Context @Context}
+ *
+ *      Http specific:
+ *        {@link Request @Request}
+ *        {@link PathParameter @PathParameter}
+ *        {@link QueryParameter @QueryParameter}
+ *        {@link RequestBody @RequestBody}
+ *
+ * @param path this function should react to. Default: '/'. Can include path (optional) parameters '/user/{userId?}'
+ * @param options see {@link RequestMappingOptions}
+ */
 export function RequestMapping(path?: string, options?: RequestMappingOptions): MethodDecorator {
     const mergedOptions = {
         ...defaultOptions,
@@ -118,22 +141,37 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
     };
 }
 
+/**
+ * GET only version of {@link RequestMapping @RequestMapping}
+ */
 export function GetMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['GET'] });
 }
 
+/**
+ * POST only version of {@link RequestMapping @RequestMapping}
+ */
 export function PostMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['POST'] });
 }
 
+/**
+ * DELETE only version of {@link RequestMapping @RequestMapping}
+ */
 export function DeleteMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['DELETE'] });
 }
 
+/**
+ * HEAD only version of {@link RequestMapping @RequestMapping}
+ */
 export function HeadMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['HEAD'] });
 }
 
+/**
+ * PATCH only version of {@link RequestMapping @RequestMapping}
+ */
 export function PatchMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['PATCH'] });
 }
@@ -142,14 +180,23 @@ export function PutMapping(path?: string, options?: Omit<RequestMappingOptions, 
     return RequestMapping(path, { ...options, methods: ['PUT'] });
 }
 
+/**
+ * OPTIONS only version of {@link RequestMapping @RequestMapping}
+ */
 export function OptionsMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['OPTIONS'] });
 }
 
+/**
+ * TRACE only version of {@link RequestMapping @RequestMapping}
+ */
 export function TraceMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['TRACE'] });
 }
 
+/**
+ * CONNECT only version of {@link RequestMapping @RequestMapping}
+ */
 export function ConnectMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['CONNECT'] });
 }

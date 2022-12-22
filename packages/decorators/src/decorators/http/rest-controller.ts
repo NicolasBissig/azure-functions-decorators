@@ -18,6 +18,12 @@ type Constructor = {
     new (...args: any[]): object;
 };
 
+/**
+ * The {@link RestController @RestController} decorator makes a class exportable as http function.
+ * This decorator must be present for HTTP related decorators to work.
+ *
+ * Methods in this class can be decorated with {@link RequestMapping @RequestMapping} and alternatives like {@link GetMapping @GetMapping}.
+ */
 export function RestController(): (c: Constructor) => any {
     return (constructor) => {
         return class extends constructor {
@@ -60,6 +66,24 @@ export function RestController(): (c: Constructor) => any {
     };
 }
 
+/**
+ * Easy way to export and test {@link RestController @RestController} decorated classes as azure functions.
+ *
+ * @example
+ * ```ts
+ * @RestController()
+ * class Example {
+ *     @RequestMapping()
+ *     async health(): Promise<void> {
+ *         return;
+ *     }
+ * }
+ *
+ * export default toAzureFunction(() => new Example());
+ * ```
+ *
+ * @param creator {@link RestController @RestController} decorated class factory
+ */
 export function toAzureFunction<T extends object>(creator: () => T): (context: Context) => Promise<HttpResponse> {
     const controller = creator();
 
