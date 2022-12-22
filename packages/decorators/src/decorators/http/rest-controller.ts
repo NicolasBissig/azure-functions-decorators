@@ -15,16 +15,15 @@ const notFoundResponse: HttpResponse = {
 };
 
 type Constructor = {
-    new (...args: any[]): object;
+    new (...args: unknown[]): object;
 };
 
 export function RestController(): (c: Constructor) => any {
     return (constructor) => {
         return class extends constructor {
+            public httpTrigger: (context: Context) => Promise<unknown>;
             constructor(...args: unknown[]) {
                 super(...args);
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 this.httpTrigger = async (context: Context) => {
                     if (!context) return notFoundResponse;
 
