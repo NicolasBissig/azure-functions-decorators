@@ -52,7 +52,7 @@ export function RestController(): ClassDecorator {
                 });
             }
 
-            return await mapping[0].func(context);
+            return await mapping[0].func.apply(instance, [context]);
         };
     };
 }

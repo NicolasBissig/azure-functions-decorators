@@ -7,12 +7,13 @@ import { handlePathParameter } from './path-parameter';
 import { handleError } from './http-status';
 import { injectParameters, parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
 import { TestableRequestMapping } from './rest-controller';
-import { HttpResponse } from '@azure/functions';
+import { HttpMethod, HttpResponse } from '@azure/functions';
 
 type ResultMapper<T> = (result: T) => HttpResponse;
 
 type FullRequestMappingOptions = {
     ResultMapper: ResultMapper<any>;
+    methods: HttpMethod[];
 };
 
 type RequestMappingOptions = Partial<FullRequestMappingOptions>;
@@ -43,6 +44,7 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
 
 const defaultOptions = {
     ResultMapper: defaultResultMapper,
+    methods: [],
 } as FullRequestMappingOptions;
 
 export function RequestMapping(path?: string, options?: RequestMappingOptions): MethodDecorator {
@@ -55,6 +57,8 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
     const parameters = parsePathWithParameters(validPath);
 
     return (target: object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
+        const controller = target.constructor.prototype;
+
         const method = descriptor?.value;
         if (!isFunction(method)) {
             throw new Error('@RequestMapping can only be applied to functions');
@@ -90,7 +94,7 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
             handlePathParameter(target, propertyName, req, args);
 
             try {
-                const result = await method.apply(this, args);
+                const result = await method.apply(controller, args);
                 return mergedOptions.ResultMapper(result);
             } catch (e) {
                 return handleError(e);
@@ -98,13 +102,12 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
         };
 
         // register the mapping in the controller
-        const controller = target.constructor.prototype;
         const mappings = (controller.requestMappings as TestableRequestMapping[]) || [];
 
         const regex = pathWithParametersToRegex(validPath);
 
         mappings.push({
-            methods: [],
+            methods: mergedOptions.methods,
             regex: regex,
             func: descriptor.value,
         });
@@ -113,4 +116,12 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
             value: mappings,
         });
     };
+}
+
+export function GetMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['GET'] });
+}
+
+export function PostMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
+    return RequestMapping(path, { ...options, methods: ['POST'] });
 }

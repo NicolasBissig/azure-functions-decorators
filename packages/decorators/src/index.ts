@@ -7,4 +7,4 @@ export { PathParameter } from './decorators/http/path-parameter';
 export { HttpStatus } from './decorators/http/http-status';
 
 export { RestController, toAzureFunction } from './decorators/http/rest-controller';
-export { RequestMapping } from './decorators/http/request-mapping';
+export { RequestMapping, GetMapping, PostMapping } from './decorators/http/request-mapping';
