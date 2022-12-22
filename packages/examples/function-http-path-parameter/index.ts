@@ -1,10 +1,4 @@
-import {
-    Context,
-    exportableRestController,
-    PathParameter,
-    RequestMapping,
-    RestController,
-} from 'azure-functions-decorators';
+import { Context, toAzureFunction, PathParameter, RequestMapping, RestController } from 'azure-functions-decorators';
 
 @RestController()
 class Example {
@@ -18,4 +12,4 @@ class Example {
     }
 }
 
-export default exportableRestController(() => new Example());
+export default toAzureFunction(() => new Example());

@@ -1,4 +1,4 @@
-import { exportableRestController, QueryParameter, RequestMapping, RestController } from 'azure-functions-decorators';
+import { toAzureFunction, QueryParameter, RequestMapping, RestController } from 'azure-functions-decorators';
 import { HttpResponse } from '@azure/functions';
 import { constants } from 'http2';
 
@@ -15,4 +15,4 @@ class Example {
     }
 }
 
-export default exportableRestController(() => new Example());
+export default toAzureFunction(() => new Example());

@@ -1,4 +1,4 @@
-import { exportableRestController, HttpStatus, RequestMapping, RestController } from 'azure-functions-decorators';
+import { toAzureFunction, HttpStatus, RequestMapping, RestController } from 'azure-functions-decorators';
 
 @HttpStatus(404)
 class UserNotFoundError extends Error {
@@ -15,4 +15,4 @@ class Example {
     }
 }
 
-export default exportableRestController(() => new Example());
+export default toAzureFunction(() => new Example());
