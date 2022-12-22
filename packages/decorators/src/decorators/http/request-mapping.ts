@@ -176,6 +176,9 @@ export function PatchMapping(path?: string, options?: Omit<RequestMappingOptions
     return RequestMapping(path, { ...options, methods: ['PATCH'] });
 }
 
+/**
+ * PUT only version of {@link RequestMapping @RequestMapping}
+ */
 export function PutMapping(path?: string, options?: Omit<RequestMappingOptions, 'methods'>): MethodDecorator {
     return RequestMapping(path, { ...options, methods: ['PUT'] });
 }
