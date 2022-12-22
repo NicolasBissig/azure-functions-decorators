@@ -6,7 +6,7 @@ import { isFunction, isHttpRequest } from './type-guards';
 export type TestableRequestMapping = {
     methods: HttpMethod[];
     regex: RegExp;
-    func: (context: Context) => Promise<unknown>;
+    func: (context: Context) => Promise<HttpResponse>;
 };
 
 const notFoundResponse: HttpResponse = {
@@ -15,13 +15,13 @@ const notFoundResponse: HttpResponse = {
 };
 
 type Constructor = {
-    new (...args: unknown[]): object;
+    new (...args: any[]): object;
 };
 
 export function RestController(): (c: Constructor) => any {
     return (constructor) => {
         return class extends constructor {
-            public httpTrigger: (context: Context) => Promise<unknown>;
+            public httpTrigger: (context: Context) => Promise<HttpResponse>;
             constructor(...args: unknown[]) {
                 super(...args);
                 this.httpTrigger = async (context: Context) => {
