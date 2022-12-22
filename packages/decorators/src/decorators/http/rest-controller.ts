@@ -3,11 +3,6 @@ import { extractPath, toValidPath } from './parameters';
 import { constants } from 'http2';
 import { isFunction, isHttpRequest } from './type-guards';
 
-type HasPrototype = {
-    prototype: any;
-    name: string;
-};
-
 export type TestableRequestMapping = {
     methods: HttpMethod[];
     regex: RegExp;
@@ -20,39 +15,48 @@ const notFoundResponse: HttpResponse = {
 };
 
 export function RestController(): ClassDecorator {
-    return <F extends HasPrototype>(target: F) => {
-        const instance = target.prototype;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return (constructor) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return class extends constructor {
+            constructor(...args: any[]) {
+                super(...args);
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                this.httpTrigger = async (context: Context) => {
+                    if (!context) return notFoundResponse;
 
-        instance.httpTrigger = async (context: Context) => {
-            if (!context) return notFoundResponse;
+                    if (!isHttpRequest(context.req) || context.req.method === null) {
+                        return notFoundResponse;
+                    }
+                    const method = context.req.method;
 
-            if (!isHttpRequest(context.req) || context.req.method === null) {
-                return notFoundResponse;
+                    const path = toValidPath(extractPath(context));
+
+                    const mappings = (constructor.prototype.requestMappings as TestableRequestMapping[]) || [];
+                    const mapping = mappings
+                        // only mappings with no explicit method, or where the requested method is included
+                        .filter((m) => m.methods.length === 0 || m.methods.includes(method))
+                        // only if the path matches
+                        .filter((m) => m.regex.test(path));
+
+                    if (mapping.length === 0) {
+                        console.error('could not find mapping for path: ' + path);
+                        return notFoundResponse;
+                    }
+
+                    if (mapping.length !== 1) {
+                        console.warn('found multiple matching mappings for path: ' + path);
+                        mappings.forEach((m) => {
+                            console.warn(m.regex);
+                        });
+                    }
+
+                    return await mapping[0].func.apply(this, [context]);
+                };
             }
-            const method = context.req.method;
-
-            const path = toValidPath(extractPath(context));
-
-            const mappings = (instance.requestMappings as TestableRequestMapping[]) || [];
-            const mapping = mappings
-                // only mappings with no explicit method, or where the requested method is included
-                .filter((m) => m.methods.length === 0 || m.methods.includes(method))
-                // only if the path matches
-                .filter((m) => m.regex.test(path));
-
-            if (mapping.length === 0) {
-                console.error('could not find mapping for path: ' + path);
-                return notFoundResponse;
-            }
-
-            if (mapping.length !== 1) {
-                console.warn('found multiple matching mappings for path: ' + path);
-                mappings.forEach((m) => {
-                    console.warn(m.regex);
-                });
-            }
-
-            return await mapping[0].func.apply(instance, [context]);
         };
     };
 }

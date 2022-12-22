@@ -94,7 +94,7 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
             handlePathParameter(target, propertyName, req, args);
 
             try {
-                const result = await method.apply(controller, args);
+                const result = await method.apply(this, args);
                 return mergedOptions.ResultMapper(result);
             } catch (e) {
                 return handleError(e);
@@ -105,12 +105,12 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
         const mappings = (controller.requestMappings as TestableRequestMapping[]) || [];
 
         const regex = pathWithParametersToRegex(validPath);
-
-        mappings.push({
+        const mapping = {
             methods: mergedOptions.methods,
             regex: regex,
             func: descriptor.value,
-        });
+        };
+        mappings.push(mapping);
 
         Object.defineProperty(controller, 'requestMappings', {
             value: mappings,
