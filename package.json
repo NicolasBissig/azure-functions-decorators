@@ -7,7 +7,7 @@
     "devDependencies": {
         "lerna": "6.1.0",
         "@typescript-eslint/eslint-plugin": "5.46.1",
-        "@typescript-eslint/parser": "5.46.1",
+        "@typescript-eslint/parser": "5.47.0",
         "@types/node": "16.18.3",
         "@types/jest": "29.2.4",
         "@azure/functions": "3.2.0",
