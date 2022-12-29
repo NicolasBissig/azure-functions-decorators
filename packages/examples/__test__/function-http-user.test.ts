@@ -17,7 +17,7 @@ describe('function-http-user', () => {
         });
 
         expect(resp.status).toBe(201);
-        expect(resp.headers.get('Location')).toBe('0');
+        expect(resp.headers.get('Location')).toBe(BASE_URL + '/user/0');
         expect(await resp.json()).toEqual({ ...user0, id: 0 });
     });
 
@@ -31,7 +31,7 @@ describe('function-http-user', () => {
         });
 
         expect(resp.status).toBe(201);
-        expect(resp.headers.get('Location')).toBe('1');
+        expect(resp.headers.get('Location')).toBe(BASE_URL + '/user/1');
         expect(await resp.json()).toEqual({ ...user1, id: 1 });
     });
 
