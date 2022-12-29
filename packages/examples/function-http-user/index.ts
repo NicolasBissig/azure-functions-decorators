@@ -25,7 +25,7 @@ const createdResponse: (user: User) => HttpResponse = (user) => {
         statusCode: constants.HTTP_STATUS_CREATED,
         body: user,
         headers: {
-            Location: String(user.id),
+            Location: `http://localhost:7071/api/user/${user.id}`,
         },
     };
 };
