@@ -28,6 +28,7 @@ export function RestController(): (c: Constructor) => any {
     return (constructor) => {
         return class extends constructor {
             public httpTrigger: (context: Context) => Promise<HttpResponse>;
+
             constructor(...args: unknown[]) {
                 super(...args);
                 this.httpTrigger = async (context: Context) => {
@@ -40,7 +41,7 @@ export function RestController(): (c: Constructor) => any {
 
                     const path = toValidPath(extractPath(context));
 
-                    const mappings = (constructor.prototype.requestMappings as TestableRequestMapping[]) || [];
+                    const mappings = getMappings(constructor.prototype);
                     const mapping = mappings
                         // only mappings with no explicit method, or where the requested method is included
                         .filter((m) => m.methods.length === 0 || m.methods.includes(method))
@@ -64,6 +65,36 @@ export function RestController(): (c: Constructor) => any {
             }
         };
     };
+}
+
+const REQUEST_MAPPINGS = Symbol('requestMappings');
+
+export function getMappings(controller: object): TestableRequestMapping[] {
+    if (controller === undefined || controller === null) return [];
+
+    return (Object.getOwnPropertyDescriptor(controller, REQUEST_MAPPINGS)?.value as TestableRequestMapping[]) || [];
+}
+
+export function registerMapping(
+    controller: object,
+    regex: RegExp,
+    methods: HttpMethod[],
+    handler: (context: Context) => Promise<HttpResponse>
+): void {
+    if (controller === undefined || controller === null) return;
+
+    const mappings = getMappings(controller);
+
+    const mapping = {
+        methods: methods,
+        regex: regex,
+        func: handler,
+    } satisfies TestableRequestMapping;
+    mappings.push(mapping);
+
+    Object.defineProperty(controller, REQUEST_MAPPINGS, {
+        value: mappings,
+    });
 }
 
 /**

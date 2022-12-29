@@ -6,7 +6,7 @@ import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';
 import { handleError } from './http-status';
 import { injectParameters, parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
-import { TestableRequestMapping } from './rest-controller';
+import { registerMapping } from './rest-controller';
 import { HttpMethod, HttpResponse } from '@azure/functions';
 
 type ResultMapper<T> = (result: T) => HttpResponse;
@@ -124,20 +124,7 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
             }
         };
 
-        // register the mapping in the controller
-        const mappings = (controller.requestMappings as TestableRequestMapping[]) || [];
-
-        const regex = pathWithParametersToRegex(validPath);
-        const mapping = {
-            methods: mergedOptions.methods,
-            regex: regex,
-            func: descriptor.value,
-        };
-        mappings.push(mapping);
-
-        Object.defineProperty(controller, 'requestMappings', {
-            value: mappings,
-        });
+        registerMapping(controller, pathWithParametersToRegex(validPath), mergedOptions.methods, descriptor.value);
     };
 }
 
