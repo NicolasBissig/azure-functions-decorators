@@ -21,7 +21,6 @@ export function toValidPath(path: string | undefined): string {
 type PathParameter = {
     index: number;
     name: string;
-    optional: boolean;
 };
 
 export function parsePathWithParameters(path: string): PathParameter[] {
@@ -37,8 +36,7 @@ export function parsePathWithParameters(path: string): PathParameter[] {
         .map((segment) => {
             return {
                 index: segment.index,
-                name: segment.value.substring(1, segment.value.length - 1).replace('?', ''),
-                optional: segment.value.charAt(segment.value.length - 2) === '?',
+                name: segment.value.substring(1, segment.value.length - 1),
             };
         });
 }
@@ -58,10 +56,8 @@ export function injectParameters(context: Context, parameters: PathParameter[]):
 export function pathWithParametersToRegex(path: string): RegExp {
     // replace all slashes with regex matching
     const replacedSlash = toValidPath(path).replace('/', '\\/');
-    // all non-optional path parameters, {name}, are replaced with matcher that requires at least one character (+) until /
+    // all path parameters, {name}, are replaced with matcher that requires at least one character (+) until /
     const withParameters = replacedSlash.replaceAll(/{\w*}/gs, '[^\\/]+');
-    // all optional path parameters, {name?}, are replaced with matcher that requires no characters (*) until /
-    const optionalParameters = withParameters.replaceAll(/{\w*\?*}/gs, '[^\\/]*');
     // make sure string starts (^) and ends ($)
-    return RegExp('^' + optionalParameters + '$');
+    return RegExp('^' + withParameters + '$');
 }

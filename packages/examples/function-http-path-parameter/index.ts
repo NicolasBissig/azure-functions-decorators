@@ -2,7 +2,7 @@ import { PathParameter, RequestMapping, RestController, toAzureFunction } from '
 
 @RestController()
 class Example {
-    @RequestMapping('/{parameter?}')
+    @RequestMapping('/{parameter}')
     async pathParameterEcho(@PathParameter('parameter') parameter: string): Promise<string> {
         return parameter;
     }

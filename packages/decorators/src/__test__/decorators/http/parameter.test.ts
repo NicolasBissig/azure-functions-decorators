@@ -80,15 +80,6 @@ describe('parsePathWithParameters tests', () => {
             {
                 index: 1,
                 name: 'userId',
-                optional: false,
-            },
-        ]);
-
-        expect(parsePathWithParameters('/{userId?}')).toEqual([
-            {
-                index: 1,
-                name: 'userId',
-                optional: true,
             },
         ]);
 
@@ -96,23 +87,20 @@ describe('parsePathWithParameters tests', () => {
             {
                 index: 2,
                 name: 'userId',
-                optional: false,
             },
         ]);
     });
 
     it('should parse complex path with multiple parameters', () => {
-        const path = 'users/{userId}/documents/{documentId?}';
+        const path = 'users/{userId}/documents/{documentId}';
         const expected = [
             {
                 index: 2,
                 name: 'userId',
-                optional: false,
             },
             {
                 index: 4,
                 name: 'documentId',
-                optional: true,
             },
         ];
 
@@ -189,6 +177,17 @@ describe('path regex tests', () => {
         expect(regex.test('/users/15')).toBeFalsy();
     });
 
+    it('should create valid regex', () => {
+        const path = '/users/';
+        const regex = pathWithParametersToRegex(path);
+
+        expect(regex.test('/')).toBeFalsy();
+        expect(regex.test('')).toBeFalsy();
+        expect(regex.test('/users')).toBeFalsy();
+        expect(regex.test('/users/')).toBeTruthy();
+        expect(regex.test('/users/15')).toBeFalsy();
+    });
+
     it('should create valid regex with parameter', () => {
         const path = '/users/{userId}';
         const regex = pathWithParametersToRegex(path);
@@ -200,19 +199,6 @@ describe('path regex tests', () => {
         expect(regex.test('/users/12a')).toBeTruthy();
         expect(regex.test('/users/2321/')).toBeFalsy();
         expect(regex.test('/users/1234/abc')).toBeFalsy();
-    });
-
-    it('should create valid regex with optional parameter', () => {
-        const path = '/users/{userId?}';
-        const regex = pathWithParametersToRegex(path);
-
-        expect(regex.test('/')).toBeFalsy();
-        expect(regex.test('')).toBeFalsy();
-        expect(regex.test('/users')).toBeFalsy();
-        expect(regex.test('/users/')).toBeTruthy();
-        expect(regex.test('/users/urn:123')).toBeTruthy();
-        expect(regex.test('/users/112/')).toBeFalsy();
-        expect(regex.test('/users/2313/abc')).toBeFalsy();
     });
 
     it('should create valid regex with multiple parameters', () => {
@@ -234,7 +220,7 @@ describe('path regex tests', () => {
     });
 
     it('should create valid regex with multiple parameters and optional at the end', () => {
-        const path = '/users/{userId}/documents/{documentId}/pages/{page?}';
+        const path = '/users/{userId}/documents/{documentId}/pages/{page}';
         const regex = pathWithParametersToRegex(path);
 
         expect(regex.test('/')).toBeFalsy();
@@ -246,9 +232,10 @@ describe('path regex tests', () => {
         expect(regex.test('/users/17/abc')).toBeFalsy();
         expect(regex.test('/users/18/documents/')).toBeFalsy();
         expect(regex.test('/users/18/documents/report/')).toBeFalsy();
-        //expect(regex.test('/users/18/documents/report/pages')).toBeTruthy(); // TODO should be true but is not!
-        expect(regex.test('/users/18/documents/report/pages/')).toBeTruthy();
+        expect(regex.test('/users/18/documents/report/pages')).toBeFalsy();
+        expect(regex.test('/users/18/documents/report/pages/')).toBeFalsy();
         expect(regex.test('/users/18/documents/report/pages/15')).toBeTruthy();
+        expect(regex.test('/users//documents/report/pages/15')).toBeFalsy();
         expect(regex.test('/users/18/documents/report/pages/15/other')).toBeFalsy();
     });
 });
