@@ -1,14 +1,14 @@
-import { HttpFunction, RequestBody } from '../../../index';
+import { RequestBody, RequestMapping, RestController, toAzureFunction } from '../../../index';
 import { createContextWithHttpRequest } from './context';
-import { callAzureFunction } from '../azure-function';
 
 type sample = {
     id: number;
 };
 
+@RestController()
 class EchoBody {
-    @HttpFunction()
-    static async httpTrigger(@RequestBody() input: sample): Promise<sample> {
+    @RequestMapping()
+    async httpTrigger(@RequestBody() input: sample): Promise<sample> {
         return input;
     }
 }
@@ -20,7 +20,7 @@ describe('@RequestBody decorator', () => {
             rawBody: JSON.stringify(input),
         });
 
-        const result = await callAzureFunction(EchoBody.httpTrigger, context);
+        const result = await toAzureFunction(() => new EchoBody())(context);
         expect(JSON.parse(result.body)).toEqual(input);
     });
 
@@ -29,7 +29,7 @@ describe('@RequestBody decorator', () => {
             rawBody: 'plain text',
         });
 
-        const result = await callAzureFunction(EchoBody.httpTrigger, context);
+        const result = await toAzureFunction(() => new EchoBody())(context);
         expect(result.status).toEqual(204);
         expect(result.statusCode).toEqual(204);
         expect(result.body).toEqual(undefined);

@@ -1,11 +1,11 @@
 import { HttpRequest } from '@azure/functions';
-import { HttpFunction, Request } from '../../../index';
+import { Request, RequestMapping, RestController, toAzureFunction } from '../../../index';
 import { createContextWithHttpRequest } from './context';
-import { callAzureFunction } from '../azure-function';
 
+@RestController()
 class RequestEcho {
-    @HttpFunction()
-    static async httpTrigger(@Request() request: HttpRequest): Promise<HttpRequest> {
+    @RequestMapping()
+    async httpTrigger(@Request() request: HttpRequest): Promise<HttpRequest> {
         return request;
     }
 }
@@ -14,7 +14,7 @@ describe('@Request decorator', () => {
     it('passes the request correctly as single argument', async () => {
         const context = createContextWithHttpRequest();
 
-        const result = await callAzureFunction(RequestEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new RequestEcho())(context);
         expect(JSON.parse(result.body)).toEqual(context.req);
     });
 });

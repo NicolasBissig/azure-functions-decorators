@@ -11,10 +11,9 @@ describe('function-http-path', () => {
         expect(await resp.text()).toEqual(id);
     });
 
-    it('should return undefined on missing path parameter', async () => {
+    it('should return 404 on missing path parameter', async () => {
         const resp = await fetch(BASE_URL + '/path');
 
-        expect(resp.status).toBe(204);
-        expect(await resp.text()).toEqual('');
+        expect(resp.status).toBe(404);
     });
 });

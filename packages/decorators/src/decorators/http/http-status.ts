@@ -10,7 +10,7 @@ type HasPrototype = {
  * The {@link HttpStatus @HttpStatus} decorator injects a http status value into decorated error instances.
  *
  * This is useful for custom Error instances. When an instance of a thrown and decorated Error is caught
- * by {@link HttpFunction @HttpFunction} the response status is set accordingly.
+ * by {@link RestController @RestController} the response status is set accordingly.
  *
  * Instances of decorated classes will be JSON-serialized and returned in the body of the response if possible.
  * If the instance has no fields or is not serializable, an empty body will be returned with the response.

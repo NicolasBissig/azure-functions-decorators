@@ -5,8 +5,7 @@
             "type": "httpTrigger",
             "direction": "in",
             "name": "req",
-            "methods": ["get"],
-            "route": "path/{*RemainingPath}"
+            "route": "user/{*RemainingPath}"
         },
         {
             "type": "http",
@@ -14,5 +13,5 @@
             "name": "$return"
         }
     ],
-    "scriptFile": "../dist/function-http-path-parameter/index.js"
+    "scriptFile": "../dist/function-http-user/index.js"
 }

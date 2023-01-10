@@ -1,10 +1,10 @@
-import { HttpFunction, PathParameter } from '../../../index';
+import { PathParameter, RequestMapping, RestController, toAzureFunction } from '../../../index';
 import { createContextWithHttpRequest } from './context';
-import { callAzureFunction } from '../azure-function';
 
+@RestController()
 class PathParameterEcho {
-    @HttpFunction()
-    static async httpTrigger(@PathParameter('page') page: string): Promise<string> {
+    @RequestMapping()
+    async httpTrigger(@PathParameter('page') page: string): Promise<string> {
         return page;
     }
 }
@@ -18,14 +18,15 @@ describe('@PathParameter decorator', () => {
             },
         });
 
-        const result = await callAzureFunction(PathParameterEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new PathParameterEcho())(context);
         expect(result.body).toEqual(page);
     });
 
     it('passes multiple path parameters correctly', async () => {
+        @RestController()
         class Echo {
-            @HttpFunction()
-            static async httpTrigger(
+            @RequestMapping()
+            async httpTrigger(
                 @PathParameter('size') size: string,
                 @PathParameter('token') token: string
             ): Promise<string[]> {
@@ -42,7 +43,7 @@ describe('@PathParameter decorator', () => {
             },
         });
 
-        const result = await callAzureFunction(Echo.httpTrigger, context);
+        const result = await toAzureFunction(() => new Echo())(context);
         expect(JSON.parse(result.body)).toEqual([size, token]);
     });
 
@@ -51,7 +52,7 @@ describe('@PathParameter decorator', () => {
             params: {},
         });
 
-        const result = await callAzureFunction(PathParameterEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new PathParameterEcho())(context);
         expect(result.status).toEqual(204);
         expect(result.statusCode).toEqual(204);
         expect(result.body).toEqual(undefined);
@@ -60,7 +61,7 @@ describe('@PathParameter decorator', () => {
     it('should pass undefined when params are not present', async () => {
         const context = createContextWithHttpRequest();
 
-        const result = await callAzureFunction(PathParameterEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new PathParameterEcho())(context);
         expect(result.status).toEqual(204);
         expect(result.statusCode).toEqual(204);
         expect(result.body).toEqual(undefined);

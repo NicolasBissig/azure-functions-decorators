@@ -1,16 +1,16 @@
 import { Context as AzureContext } from '@azure/functions';
-import { Context, HttpFunction, PathParameter } from '../../index';
+import { Context, PathParameter, RequestMapping, RestController, toAzureFunction } from '../../index';
 import { createContextWithHttpRequest } from './http/context';
-import { callAzureFunction } from './azure-function';
 
 type ContextEchoResponse = {
     page: number;
     context: AzureContext;
 };
 
+@RestController()
 class ContextEcho {
-    @HttpFunction()
-    static async httpTrigger(
+    @RequestMapping()
+    async httpTrigger(
         @PathParameter('page') page: number,
         @Context() context: AzureContext
     ): Promise<ContextEchoResponse> {
@@ -31,7 +31,7 @@ describe('@Context decorator', () => {
             },
         });
 
-        const result = await callAzureFunction(ContextEcho.httpTrigger, context);
+        const result = await toAzureFunction(() => new ContextEcho())(context);
         const resultBody: ContextEchoResponse = JSON.parse(result.body);
         expect(resultBody.page).toEqual(page);
         expect(resultBody.context).toEqual(context);
