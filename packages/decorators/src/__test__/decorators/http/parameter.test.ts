@@ -3,10 +3,10 @@ import {
     injectParameters,
     parsePathWithParameters,
     pathWithParametersToRegex,
-    REMAINING_PATH,
     toValidPath,
 } from '../../../decorators/http/parameters';
 import { Context } from '@azure/functions';
+import { REMAINING_PATH } from '../../../decorators/http/rest-controller';
 
 describe('extractPath tests', () => {
     it('RemainingPath name should not change', () => {
@@ -16,23 +16,29 @@ describe('extractPath tests', () => {
     it('should extract path correctly', () => {
         const path = '/user/15';
         expect(
-            extractPath({
-                req: {
-                    params: {
-                        [REMAINING_PATH]: path,
+            extractPath(
+                {
+                    req: {
+                        params: {
+                            [REMAINING_PATH]: path,
+                        },
                     },
-                },
-            } as unknown as Context)
+                } as unknown as Context,
+                REMAINING_PATH
+            )
         ).toEqual(path);
     });
 
     it('should pass undefined on missing path', () => {
         expect(
-            extractPath({
-                req: {
-                    params: {},
-                },
-            } as unknown as Context)
+            extractPath(
+                {
+                    req: {
+                        params: {},
+                    },
+                } as unknown as Context,
+                REMAINING_PATH
+            )
         ).toBeUndefined();
     });
 
@@ -130,7 +136,7 @@ describe('injectParameters tests', () => {
             },
         } as unknown as Context;
 
-        injectParameters(context, parsePathWithParameters(path));
+        injectParameters(context, parsePathWithParameters(path), REMAINING_PATH);
 
         expect(context?.req?.params['userId']).toEqual('15');
         expect(context).toEqual(expectedContext);
@@ -149,7 +155,7 @@ describe('injectParameters tests', () => {
             },
         } as unknown as Context;
 
-        injectParameters(originalContext, parsePathWithParameters(path));
+        injectParameters(originalContext, parsePathWithParameters(path), REMAINING_PATH);
 
         expect(originalContext).toEqual(expectedContext);
     });

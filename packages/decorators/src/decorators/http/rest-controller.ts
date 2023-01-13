@@ -16,8 +16,10 @@ type FullRestControllerOptions = {
 
 type RestControllerOptions = Partial<FullRestControllerOptions>;
 
+export const REMAINING_PATH = 'RemainingPath';
+
 const defaultOptions = {
-    remainingPathVariableName: 'RemainingPath',
+    remainingPathVariableName: REMAINING_PATH,
 } satisfies FullRestControllerOptions;
 
 const notFoundResponse: HttpResponse = {
