@@ -5,7 +5,7 @@ import { handleRequestBodyParameter } from './request-body';
 import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';
 import { handleError } from './http-status';
-import { injectParameters, parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
+import { parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
 import { registerMapping } from './rest-controller';
 import { HttpMethod, HttpResponse } from '@azure/functions';
 
@@ -45,7 +45,7 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
 const defaultOptions = {
     ResultMapper: defaultResultMapper,
     methods: [],
-} as FullRequestMappingOptions;
+} satisfies FullRequestMappingOptions;
 
 /**
  * The {@link RequestMapping @RequestMapping} decorator marks a function inside a {@link RestController @RestController} as a http triggered function.
@@ -107,9 +107,6 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
                 );
             }
 
-            // inject extra path parameters
-            injectParameters(context, parameters);
-
             handleContextParameter(target, propertyName, context, args);
             handleRequestParameter(target, propertyName, req, args);
             handleRequestBodyParameter(target, propertyName, req, args);
@@ -124,7 +121,13 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
             }
         };
 
-        registerMapping(controller, pathWithParametersToRegex(validPath), mergedOptions.methods, descriptor.value);
+        registerMapping(
+            controller,
+            pathWithParametersToRegex(validPath),
+            parameters,
+            mergedOptions.methods,
+            descriptor.value
+        );
     };
 }
 

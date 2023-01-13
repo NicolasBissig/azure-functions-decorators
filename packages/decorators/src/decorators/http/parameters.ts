@@ -1,11 +1,9 @@
 import { Context } from '@azure/functions';
 
-export const REMAINING_PATH = 'RemainingPath';
-
-export function extractPath(context: Context, parameter?: string): string | undefined {
+export function extractPath(context: Context, remainingPathParameter: string): string | undefined {
     const params = context?.req?.params;
     if (params === undefined) return undefined;
-    return params[parameter || REMAINING_PATH];
+    return params[remainingPathParameter];
 }
 
 export function toValidPath(path: string | undefined): string {
@@ -18,7 +16,7 @@ export function toValidPath(path: string | undefined): string {
     return path;
 }
 
-type PathParameter = {
+export type PathParameter = {
     index: number;
     name: string;
 };
@@ -41,10 +39,10 @@ export function parsePathWithParameters(path: string): PathParameter[] {
         });
 }
 
-export function injectParameters(context: Context, parameters: PathParameter[]): void {
+export function injectParameters(context: Context, parameters: PathParameter[], remainingPathParameter: string): void {
     const request = context.req;
     if (!request) return;
-    const requestedPath = extractPath(context);
+    const requestedPath = extractPath(context, remainingPathParameter);
     if (!requestedPath) return;
 
     const segmentValues = toValidPath(requestedPath).split('/');

@@ -1,13 +1,24 @@
 import { Context, HttpMethod, HttpResponse } from '@azure/functions';
-import { extractPath, toValidPath } from './parameters';
+import { extractPath, injectParameters, PathParameter, toValidPath } from './parameters';
 import { constants } from 'http2';
 import { isFunction, isHttpRequest } from './type-guards';
 
 export type TestableRequestMapping = {
     methods: HttpMethod[];
     regex: RegExp;
+    parameters: PathParameter[];
     func: (context: Context) => Promise<HttpResponse>;
 };
+
+type FullRestControllerOptions = {
+    remainingPathVariableName: string;
+};
+
+type RestControllerOptions = Partial<FullRestControllerOptions>;
+
+const defaultOptions = {
+    remainingPathVariableName: 'RemainingPath',
+} satisfies FullRestControllerOptions;
 
 const notFoundResponse: HttpResponse = {
     status: constants.HTTP_STATUS_NOT_FOUND,
@@ -24,7 +35,12 @@ type Constructor = {
  *
  * Methods in this class can be decorated with {@link RequestMapping @RequestMapping} and alternatives like {@link GetMapping @GetMapping}.
  */
-export function RestController(): (c: Constructor) => any {
+export function RestController(options?: RestControllerOptions): (c: Constructor) => any {
+    const mergedOptions = {
+        ...defaultOptions,
+        ...options,
+    };
+
     return (constructor) => {
         return class extends constructor {
             public httpTrigger: (context: Context) => Promise<HttpResponse>;
@@ -39,28 +55,31 @@ export function RestController(): (c: Constructor) => any {
                     }
                     const method = context.req.method;
 
-                    const path = toValidPath(extractPath(context));
+                    const path = toValidPath(extractPath(context, mergedOptions.remainingPathVariableName));
 
                     const mappings = getMappings(constructor.prototype);
-                    const mapping = mappings
+                    const filteredMappings = mappings
                         // only mappings with no explicit method, or where the requested method is included
                         .filter((m) => m.methods.length === 0 || m.methods.includes(method))
                         // only if the path matches
                         .filter((m) => m.regex.test(path));
 
-                    if (mapping.length === 0) {
+                    if (filteredMappings.length === 0) {
                         console.error('could not find mapping for path: ' + path);
                         return notFoundResponse;
                     }
 
-                    if (mapping.length !== 1) {
+                    if (filteredMappings.length !== 1) {
                         console.warn('found multiple matching mappings for path: ' + path);
                         mappings.forEach((m) => {
                             console.warn(m.regex);
                         });
                     }
 
-                    return await mapping[0].func.apply(this, [context]);
+                    const mapping = filteredMappings[0];
+                    injectParameters(context, mapping.parameters, mergedOptions.remainingPathVariableName);
+
+                    return await mapping.func.apply(this, [context]);
                 };
             }
         };
@@ -78,6 +97,7 @@ export function getMappings(controller: object): TestableRequestMapping[] {
 export function registerMapping(
     controller: object,
     regex: RegExp,
+    parameters: PathParameter[],
     methods: HttpMethod[],
     handler: (context: Context) => Promise<HttpResponse>
 ): void {
@@ -88,6 +108,7 @@ export function registerMapping(
     const mapping = {
         methods: methods,
         regex: regex,
+        parameters: parameters,
         func: handler,
     } satisfies TestableRequestMapping;
     mappings.push(mapping);
