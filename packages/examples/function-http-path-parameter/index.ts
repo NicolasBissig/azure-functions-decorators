@@ -1,10 +1,11 @@
-import { HttpFunction, PathParameter } from 'azure-functions-decorators';
+import { PathParameter, RequestMapping, RestController, toAzureFunction } from 'azure-functions-decorators';
 
+@RestController()
 class Example {
-    @HttpFunction()
-    static async pathParameterEcho(@PathParameter('parameter') parameter: string): Promise<string> {
+    @RequestMapping('/{parameter}')
+    async pathParameterEcho(@PathParameter('parameter') parameter: string): Promise<string> {
         return parameter;
     }
 }
 
-export default Example.pathParameterEcho;
+export default toAzureFunction(() => new Example());

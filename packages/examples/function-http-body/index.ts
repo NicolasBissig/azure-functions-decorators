@@ -1,10 +1,11 @@
-import { HttpFunction, RequestBody } from 'azure-functions-decorators';
+import { toAzureFunction, RequestBody, RequestMapping, RestController } from 'azure-functions-decorators';
 
+@RestController()
 class Example {
-    @HttpFunction()
-    static async echoBody(@RequestBody() body: unknown): Promise<unknown> {
+    @RequestMapping()
+    async echoBody(@RequestBody() body: unknown): Promise<unknown> {
         return body;
     }
 }
 
-export default Example.echoBody;
+export default toAzureFunction(() => new Example());
