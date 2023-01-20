@@ -35,6 +35,9 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
             body: JSON.stringify(result),
             status: 200,
             statusCode: 200,
+            headers: {
+                'content-type': 'application/json',
+            },
         };
     }
 
@@ -42,7 +45,10 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
         // is probably a primitive, return it as body
         body: result,
         status: 200,
-        statusCode: 200
+        statusCode: 200,
+        headers: {
+            'content-type': 'application/json',
+        },
     };
 };
 
