@@ -25,7 +25,11 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
     }
 
     if (isHttpResponse(result)) {
-        // is already a HttpResponse so return it
+        // is already a HttpResponse
+        if (result.body && !result.headers?.['content-type']) {
+            // there is a body, but no content type set, set it
+            result.headers = { ...result.headers, 'content-type': 'application/json' };
+        }
         return result;
     }
 
@@ -33,12 +37,22 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
         // is an object, serialize it in the body
         return {
             body: JSON.stringify(result),
+            status: 200,
+            statusCode: 200,
+            headers: {
+                'content-type': 'application/json',
+            },
         };
     }
 
     return {
         // is probably a primitive, return it as body
         body: result,
+        status: 200,
+        statusCode: 200,
+        headers: {
+            'content-type': 'application/json',
+        },
     };
 };
 

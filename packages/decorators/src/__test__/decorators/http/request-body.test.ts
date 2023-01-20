@@ -22,6 +22,9 @@ describe('@RequestBody decorator', () => {
 
         const result = await toAzureFunction(() => new EchoBody())(context);
         expect(JSON.parse(result.body)).toEqual(input);
+        expect(result.status).toEqual(200);
+        expect(result.statusCode).toEqual(200);
+        expect(result.headers).toEqual({ 'content-type': 'application/json' });
     });
 
     it('passes undefined when not JSON', async () => {
