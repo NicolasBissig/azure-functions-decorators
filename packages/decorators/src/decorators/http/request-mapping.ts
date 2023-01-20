@@ -25,7 +25,11 @@ const defaultResultMapper: ResultMapper<unknown> = (result: unknown): HttpRespon
     }
 
     if (isHttpResponse(result)) {
-        // is already a HttpResponse so return it
+        // is already a HttpResponse
+        if (result.body && !result.headers?.['content-type']) {
+            // there is a body, but no content type set, set it
+            result.headers = { ...result.headers, 'content-type': 'application/json' };
+        }
         return result;
     }
 
