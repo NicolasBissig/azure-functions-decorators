@@ -1,5 +1,4 @@
 import { isContext, isFunction, isHttpRequest, isHttpResponse } from './type-guards';
-import { handleRequestParameter } from './http-request';
 import { handleRequestBodyParameter } from './request-body';
 import { handleQueryParameters } from './query-parameter';
 import { handlePathParameter } from './path-parameter';
@@ -127,7 +126,6 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
                 injectableParameter.injector(target, propertyName, context, args);
             }
 
-            handleRequestParameter(target, propertyName, req, args);
             handleRequestBodyParameter(target, propertyName, req, args);
             handleQueryParameters(target, propertyName, req, args);
             handlePathParameter(target, propertyName, req, args);
