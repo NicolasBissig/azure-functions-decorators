@@ -6,6 +6,6 @@ import { createParameterDecorator } from '../create-parameter-decorator';
  */
 export const Request = createParameterDecorator({
     symbol: 'Request',
-    injector: (context) => context.req,
+    injector: (context) => context?.req,
     maxParameters: 1,
 });

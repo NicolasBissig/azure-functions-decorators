@@ -1,32 +1,21 @@
 import { HttpRequest } from '@azure/functions';
-import { applyToMarked, markParameter } from '../reflection';
-
-const BodyMetaDataKey = Symbol('RequestBody');
+import { createParameterDecorator } from '../create-parameter-decorator';
 
 /**
  * The {@link RequestBody @RequestBody} decorator injects the parsed json request body into a parameter.
  * The type of the injected parameter can be anything, but will not be validated.
  * If the request body is not parseable, undefined will be injected.
  */
-export function RequestBody(): ParameterDecorator {
-    return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
-        markParameter(target, propertyKey, BodyMetaDataKey, parameterIndex, 1);
-    };
-}
+export const RequestBody = createParameterDecorator({
+    symbol: 'RequestBody',
+    maxParameters: 1,
+    injector: (context) => parseBody(context?.req),
+});
 
-function parseBody(req: HttpRequest): unknown {
+function parseBody(req: HttpRequest | undefined): unknown {
     try {
-        return JSON.parse(req.rawBody);
+        return JSON.parse(req?.rawBody);
     } catch {
         return undefined;
     }
-}
-
-export function handleRequestBodyParameter(
-    target: object,
-    propertyName: string | symbol,
-    req: HttpRequest,
-    args: unknown[]
-) {
-    applyToMarked<number>(target, propertyName, BodyMetaDataKey, (parameter) => (args[parameter] = parseBody(req)));
 }

@@ -20,4 +20,4 @@ export {
     ConnectMapping,
 } from './decorators/http/request-mapping';
 
-export { createParameterDecorator } from './decorators/create-parameter-decorator';
+export { createParameterDecorator, createParameterDecoratorWithOptions } from './decorators/create-parameter-decorator';

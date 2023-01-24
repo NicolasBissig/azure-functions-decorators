@@ -1,7 +1,4 @@
 import { isContext, isFunction, isHttpRequest, isHttpResponse } from './type-guards';
-import { handleRequestBodyParameter } from './request-body';
-import { handleQueryParameters } from './query-parameter';
-import { handlePathParameter } from './path-parameter';
 import { handleError } from './http-status';
 import { parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
 import { registerMapping } from './rest-controller';
@@ -125,10 +122,6 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
             for (const injectableParameter of parametersToInjectContext) {
                 injectableParameter.injector(target, propertyName, context, args);
             }
-
-            handleRequestBodyParameter(target, propertyName, req, args);
-            handleQueryParameters(target, propertyName, req, args);
-            handlePathParameter(target, propertyName, req, args);
 
             try {
                 const result = await method.apply(this, args);
