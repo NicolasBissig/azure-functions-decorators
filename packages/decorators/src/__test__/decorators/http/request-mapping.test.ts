@@ -170,7 +170,10 @@ describe('@RequestMapping decorator', () => {
     it('returns error status and body for decorated errors', async () => {
         @HttpStatus(404)
         class NotFoundErrorWithPayload extends Error {
-            constructor(public readonly message: string, public readonly errorCode: string) {
+            constructor(
+                public readonly message: string,
+                public readonly errorCode: string
+            ) {
                 super(message);
             }
         }

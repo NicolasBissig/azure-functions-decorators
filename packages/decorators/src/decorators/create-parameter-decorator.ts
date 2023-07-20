@@ -43,10 +43,10 @@ export function createParameterDecoratorWithOptions<O>(
     }
 
     function decorator(decoratorOptions: O): ParameterDecorator {
-        return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
+        return (target: object, propertyKey: string | symbol | undefined, parameterIndex: number) => {
             markParameterWithValue<Omit<InjectableParameter<O>, 'injector'>>(
                 target,
-                propertyKey,
+                propertyKey!,
                 metaDataKey,
                 { index: parameterIndex, options: decoratorOptions },
                 options.maxParameters
@@ -81,10 +81,10 @@ export function createParameterDecorator(options: createParameterDecoratorOption
     }
 
     function decorator(): ParameterDecorator {
-        return (target: object, propertyKey: string | symbol, parameterIndex: number) => {
+        return (target: object, propertyKey: string | symbol | undefined, parameterIndex: number) => {
             markParameterWithValue<Omit<InjectableParameter<never>, 'injector' | 'options'>>(
                 target,
-                propertyKey,
+                propertyKey!,
                 metaDataKey,
                 { index: parameterIndex },
                 options.maxParameters
