@@ -2,7 +2,10 @@ import { toAzureFunction, HttpStatus, RequestMapping, RestController } from 'azu
 
 @HttpStatus(404)
 class UserNotFoundError extends Error {
-    constructor(public readonly message: string, public readonly userId: string) {
+    constructor(
+        public readonly message: string,
+        public readonly userId: string
+    ) {
         super(message);
     }
 }
