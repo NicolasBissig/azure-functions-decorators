@@ -23,8 +23,11 @@ export function HttpStatus(status: number): ClassDecorator {
     };
 }
 
-export function findHttpStatusBySymbol(target: any): number | undefined {
+export function findHttpStatusBySymbol(target: unknown): number | undefined {
     try {
+        // i currently have no better way to do this
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         const status = target?.[HttpStatusPrototypeProperty];
 
         const statusCastToNumber = Number(status);

@@ -14,3 +14,4 @@ overrides:
     - files: ['**/__test__/**']
       rules:
           '@typescript-eslint/ban-ts-comment': [warn]
+          '@typescript-eslint/no-unused-vars': [warn]

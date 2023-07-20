@@ -28,6 +28,8 @@ const notFoundResponse: HttpResponse = {
 };
 
 type Constructor = {
+    // constructors are just this way, we need to allow any arguments
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     new (...args: any[]): object;
 };
 
@@ -37,6 +39,7 @@ type Constructor = {
  *
  * Methods in this class can be decorated with {@link RequestMapping @RequestMapping} and alternatives like {@link GetMapping @GetMapping}.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function RestController(options?: RestControllerOptions): (c: Constructor) => any {
     const mergedOptions = {
         ...defaultOptions,

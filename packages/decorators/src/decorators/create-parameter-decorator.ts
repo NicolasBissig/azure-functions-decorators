@@ -5,7 +5,7 @@ import 'reflect-metadata';
 type createParameterDecoratorOptions<O> = {
     symbol: string;
     maxParameters?: number;
-    injector: (context: Context, options: O) => any;
+    injector: (context: Context, options: O) => unknown;
 };
 
 const PARAMETERS_TO_INJECT = Symbol('parametersToInjectContext');
@@ -13,7 +13,7 @@ const PARAMETERS_TO_INJECT = Symbol('parametersToInjectContext');
 type InjectableParameter<O> = {
     index: number;
     options: O;
-    injector: (target: object, propertyName: string | symbol, context: Context, args: unknown[]) => any;
+    injector: (target: object, propertyName: string | symbol, context: Context, args: unknown[]) => unknown;
 };
 
 export function getParametersToInjectContext<O>(target: object): InjectableParameter<O>[] {
@@ -65,7 +65,7 @@ export function createParameterDecoratorWithOptions<O>(
 // --- no options ---
 
 type createParameterDecoratorOptionsNoOptions = createParameterDecoratorOptions<never> & {
-    injector: (context: Context) => any;
+    injector: (context: Context) => unknown;
 };
 
 export function createParameterDecorator(options: createParameterDecoratorOptionsNoOptions): () => ParameterDecorator {

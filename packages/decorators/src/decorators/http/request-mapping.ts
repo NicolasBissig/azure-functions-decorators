@@ -8,6 +8,7 @@ import { getParametersToInjectContext } from '../create-parameter-decorator';
 type ResultMapper<T> = (result: T) => HttpResponse;
 
 type FullRequestMappingOptions = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ResultMapper: ResultMapper<any>;
     methods: HttpMethod[];
 };
@@ -89,6 +90,8 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
     const validPath = toValidPath(path);
     const parameters = parsePathWithParameters(validPath);
 
+    // this any here is okay, because we check if it is a function in the decorator
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (target: object, propertyName: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
         const controller = target.constructor.prototype;
 
