@@ -1,13 +1,9 @@
 import { isContext, isFunction, isHttpRequest, isHttpResponse } from './type-guards';
-import { handleContextParameter } from '../context';
-import { handleRequestParameter } from './http-request';
-import { handleRequestBodyParameter } from './request-body';
-import { handleQueryParameters } from './query-parameter';
-import { handlePathParameter } from './path-parameter';
 import { handleError } from './http-status';
 import { parsePathWithParameters, pathWithParametersToRegex, toValidPath } from './parameters';
 import { registerMapping } from './rest-controller';
 import { HttpMethod, HttpResponse } from '@azure/functions';
+import { getParametersToInjectContext } from '../create-parameter-decorator';
 
 type ResultMapper<T> = (result: T) => HttpResponse;
 
@@ -121,11 +117,11 @@ export function RequestMapping(path?: string, options?: RequestMappingOptions): 
                 );
             }
 
-            handleContextParameter(target, propertyName, context, args);
-            handleRequestParameter(target, propertyName, req, args);
-            handleRequestBodyParameter(target, propertyName, req, args);
-            handleQueryParameters(target, propertyName, req, args);
-            handlePathParameter(target, propertyName, req, args);
+            const parametersToInjectContext = getParametersToInjectContext(target);
+
+            for (const injectableParameter of parametersToInjectContext) {
+                injectableParameter.injector(target, propertyName, context, args);
+            }
 
             try {
                 const result = await method.apply(this, args);

@@ -19,3 +19,5 @@ export {
     TraceMapping,
     ConnectMapping,
 } from './decorators/http/request-mapping';
+
+export { createParameterDecorator, createParameterDecoratorWithOptions } from './decorators/create-parameter-decorator';
