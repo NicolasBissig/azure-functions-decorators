@@ -8,7 +8,7 @@
         "lerna": "7.1.4",
         "@typescript-eslint/eslint-plugin": "6.1.0",
         "@typescript-eslint/parser": "6.1.0",
-        "@types/node": "16.18.3",
+        "@types/node": "20.6.0",
         "@types/jest": "29.5.3",
         "@azure/functions": "3.5.1",
         "eslint": "8.45.0",
